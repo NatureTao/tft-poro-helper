@@ -7,6 +7,8 @@ from PySide6.QtWidgets import QVBoxLayout, QHBoxLayout, QLabel
 from PySide6.QtGui import QTextCursor
 from qfluentwidgets import CardWidget, TextEdit, FluentIcon, IconWidget, PushButton
 
+from ui.i18n import I18n, I18nKey
+
 
 class HomeConsole(CardWidget):
     """日志控制台"""
@@ -29,7 +31,7 @@ class HomeConsole(CardWidget):
         icon = IconWidget(FluentIcon.COMMAND_PROMPT)
         icon.setFixedSize(16, 16)
 
-        title = QLabel("运行日志")
+        title = QLabel(I18n.get(I18nKey.RUN_LOG))
         title.setStyleSheet(
             "font-size: 14px; font-weight: bold; color: #cccccc; font-family: 'SimHei';"
         )
@@ -38,7 +40,7 @@ class HomeConsole(CardWidget):
         tabBar.addWidget(title)
         tabBar.addStretch()
 
-        clearBtn = PushButton(FluentIcon.BROOM, "清空")
+        clearBtn = PushButton(FluentIcon.BROOM, I18n.get(I18nKey.CLEAR))
         clearBtn.clicked.connect(self.clear_log)
         tabBar.addWidget(clearBtn)
 

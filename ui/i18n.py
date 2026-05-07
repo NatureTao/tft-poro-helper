@@ -54,6 +54,8 @@ TRANSLATIONS: Dict[Language, Dict[str, str]] = {
         I18nKey.LOG_LEVEL: "日志等级",
         I18nKey.NORMAL: "正常",
         I18nKey.DEBUG: "调试",
+        I18nKey.RUN_LOG: "运行日志",
+        I18nKey.CLEAR: "清空",
 
         I18nKey.STATS: "挂机统计",
         I18nKey.THIS_GAME: "本次对局",
@@ -61,8 +63,6 @@ TRANSLATIONS: Dict[Language, Dict[str, str]] = {
         I18nKey.RUNTIME: "运行时长",
         I18nKey.PASS: "通行证",
         I18nKey.TFT_RANK: "云顶段位",
-        I18nKey.RUN_LOG: "运行日志",
-        I18nKey.CLEAR: "清空",
         I18nKey.SOLO_RANK: "单双",
         I18nKey.FLEX_RANK: "灵活",
         I18nKey.TURBO_RANK: "狂暴",
