@@ -136,8 +136,8 @@ class LOLService:
         self.currentLevelXP = 0
         self.totalLevelXP = 0
 
-        self.gameName = "未知"
-        self.tagLine = "未知"
+        self.gameName = "--"
+        self.tagLine = "--"
         self.profileIconId = 0
         self.avatar = None
         self.summonerLevel = 0
@@ -152,11 +152,11 @@ class LOLService:
         self.tft_standard_coin = 0
         self.tft_star_fragments = 0
 
-        self.rank_solo = "等待游戏启动"
-        self.rank_flex = "等待游戏启动"
-        self.rank_tft = "等待游戏启动"
-        self.rank_tft_turbo = "等待游戏启动"
-        self.rank_tft_double = "等待游戏启动"
+        self.rank_solo = "--"
+        self.rank_flex = "--"
+        self.rank_tft = "--"
+        self.rank_tft_turbo = "--"
+        self.rank_tft_double = "--"
 
     # ==================================================================
     # 主刷新流程
