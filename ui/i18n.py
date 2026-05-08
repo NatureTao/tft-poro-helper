@@ -73,7 +73,6 @@ TRANSLATIONS: Dict[Language, Dict[str, str]] = {
         I18nKey.PASS_WAIT: "等待游戏启动",
         I18nKey.UNRANKED: "未定级",
         I18nKey.GAME_UNIT: "局",
-        I18nKey.DEBUG_MODE_ON: "DEBUG 模式已开启，日志将保存到文件",
     },
     Language.ZH_TW: {
         I18nKey.START_BOT: "開始掛機",
@@ -99,7 +98,6 @@ TRANSLATIONS: Dict[Language, Dict[str, str]] = {
         I18nKey.PASS_WAIT: "等待遊戲啟動",
         I18nKey.UNRANKED: "未定級",
         I18nKey.GAME_UNIT: "局",
-        I18nKey.DEBUG_MODE_ON: "DEBUG 模式已開啟，日誌將儲存到檔案",
         I18nKey.HOME_PAGE_NAME: "首頁",
     },
     Language.EN_US: {
@@ -127,7 +125,7 @@ TRANSLATIONS: Dict[Language, Dict[str, str]] = {
         I18nKey.PASS_WAIT: "Waiting...",
         I18nKey.UNRANKED: "Unranked",
         I18nKey.GAME_UNIT: "games",
-        I18nKey.DEBUG_MODE_ON: "DEBUG mode enabled, logs will be saved to file",
+
     },
 }
 

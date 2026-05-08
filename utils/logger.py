@@ -20,7 +20,7 @@ class Logger:
     """全局日志管理器"""
     _instance = None
     signal = None
-
+    
     def __new__(cls):
         if cls._instance is None:
             cls._instance = super().__new__(cls)
