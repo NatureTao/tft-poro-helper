@@ -1,6 +1,5 @@
 """
 控制台模块：纯日志展示（带标签栏 + 清空按钮）
-每条日志带左侧色块 + 渐变背景
 """
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QVBoxLayout, QHBoxLayout, QLabel
@@ -31,18 +30,18 @@ class HomeConsole(CardWidget):
         icon = IconWidget(FluentIcon.COMMAND_PROMPT)
         icon.setFixedSize(16, 16)
 
-        title = QLabel(I18n.get(I18nKey.RUN_LOG))
-        title.setStyleSheet(
+        self.title = QLabel(I18n.get(I18nKey.RUN_LOG))
+        self.title.setStyleSheet(
             "font-size: 14px; font-weight: bold; color: #cccccc; font-family: 'SimHei';"
         )
 
         tabBar.addWidget(icon)
-        tabBar.addWidget(title)
+        tabBar.addWidget(self.title)
         tabBar.addStretch()
 
-        clearBtn = PushButton(FluentIcon.BROOM, I18n.get(I18nKey.CLEAR))
-        clearBtn.clicked.connect(self.clear_log)
-        tabBar.addWidget(clearBtn)
+        self.clearBtn = PushButton(FluentIcon.BROOM, I18n.get(I18nKey.CLEAR))
+        self.clearBtn.clicked.connect(self.clear_log)
+        tabBar.addWidget(self.clearBtn)
 
         self.vBoxLayout.addLayout(tabBar)
 
@@ -59,7 +58,7 @@ class HomeConsole(CardWidget):
         logger.signal.warning.connect(self._on_log_warning)
         logger.signal.error.connect(self._on_log_error)
         if logger.debug_mode:
-            self.appendLog("[系统] DEBUG 模式已开启，日志将保存到文件", "info")
+            self.appendLog(I18n.get(I18nKey.DEBUG_MODE_ON), "info")
 
     def _on_log_info(self, msg: str):
         self.appendLog(msg, "info")
@@ -76,18 +75,17 @@ class HomeConsole(CardWidget):
         level: 'info' | 'warning' | 'error' | 'success'
         """
         colors = {
-            "info": "#12aa9c",
+            "info":    "#12aa9c",
             "warning": "#f0a040",
-            "error": "#e04040",
+            "error":   "#e04040",
             "success": "#66bb6a",
         }
         c = colors.get(level, "#12aa9c")
 
-        # 等级标签
         tags = {
-            "info": "INFO",
+            "info":    "INFO",
             "warning": "WARN",
-            "error": "ERROR",
+            "error":   "ERROR",
             "success": "OK",
         }
         tag = tags.get(level, "INFO")
@@ -116,3 +114,12 @@ class HomeConsole(CardWidget):
         cursor.movePosition(QTextCursor.MoveOperation.End)
         self.textEdit.setTextCursor(cursor)
         self.textEdit.ensureCursorVisible()
+
+    # ==================================================================
+    # 国际化刷新
+    # ==================================================================
+
+    def refresh_texts(self):
+        """语言切换后刷新所有文本"""
+        self.title.setText(I18n.get(I18nKey.RUN_LOG))
+        self.clearBtn.setText(I18n.get(I18nKey.CLEAR))

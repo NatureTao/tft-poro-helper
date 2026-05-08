@@ -29,6 +29,7 @@ class VerticalToggleSwitch(QWidget):
         self._anim_pos = float(index)
         self.update()
 
+
     def paintEvent(self, e):
         painter = QPainter(self)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)

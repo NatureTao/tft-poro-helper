@@ -65,6 +65,12 @@ class Home(QFrame):
         self.consoleModule.set_controller(controller)
         self.quickSettings.load_settings()
 
+    def refresh_all_texts(self):
+        self.startBtn.setText(
+            I18n.get(I18nKey.STOP_BOT) if self.is_running else I18n.get(I18nKey.START_BOT)
+        )
+        self.statsModule.refresh_texts()
+        self.consoleModule.refresh_texts()
 
     def _on_start_clicked(self):
         """开始/结束挂机"""

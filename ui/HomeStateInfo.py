@@ -8,6 +8,8 @@ from PySide6.QtWidgets import QVBoxLayout, QHBoxLayout, QLabel, QWidget
 from qfluentwidgets import CardWidget, FluentIcon, IconWidget, ProgressBar
 
 from ui.service import lol
+from ui.i18n import I18n, I18nKey
+
 
 class HomeStateInfo(CardWidget):
     """挂机统计卡片"""
@@ -39,51 +41,51 @@ class HomeStateInfo(CardWidget):
         # ==============================================================
         # 标题
         # ==============================================================
-        title = QLabel("挂机统计")
-        title.setStyleSheet(
+        self.title = QLabel(I18n.get(I18nKey.STATS))
+        self.title.setStyleSheet(
             "font-size: 16px; font-weight: bold; color: #ffffff; font-family: 'SimHei';"
         )
-        title.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.vBoxLayout.addWidget(title)
+        self.title.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.vBoxLayout.addWidget(self.title)
 
         # ==============================================================
-        # 三指标：本次对局 | 累计对局 | 运行时长
+        # 三指标
         # ==============================================================
         row1 = QHBoxLayout()
         row1.setSpacing(12)
 
         self.stat_labels = {}
-        for icon_key, label_text, key, default in [
-            ("GAME", "本次对局", "session_games", "0 局"),
-            ("PIE_SINGLE", "累计对局", "total_games", "0 局"),
-            ("HISTORY", "运行时长", "uptime", "00:00:00"),
+        self.stat_header_labels = {}
+        for icon_key, label_key, key, suffix in [
+            ("GAME",        I18nKey.THIS_GAME,   "session_games", "局"),
+            ("PIE_SINGLE",  I18nKey.TOTAL_GAMES, "total_games",   "局"),
+            ("HISTORY",     I18nKey.RUNTIME,     "uptime",        "00:00:00"),
         ]:
             box = QVBoxLayout()
             box.setSpacing(2)
             box.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-            # 图标 + 文字 居中
             header = QHBoxLayout()
             header.setSpacing(4)
             header.setAlignment(Qt.AlignmentFlag.AlignCenter)
             icon = IconWidget(getattr(FluentIcon, icon_key))
             icon.setFixedSize(16, 16)
-            lbl = QLabel(label_text)
+            lbl = QLabel(I18n.get(label_key))
             lbl.setStyleSheet("font-size: 12px; color: #888888; font-family: 'SimHei';")
             header.addWidget(icon)
             header.addWidget(lbl)
 
-            val = QLabel(default)
+            val = QLabel("0 局" if suffix == "局" else suffix)
             val.setStyleSheet("font-size: 22px; font-weight: bold; color: #ffffff;")
             val.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
             box.addLayout(header)
             box.addWidget(val)
-            row1.addLayout(box, 1)  # 等宽拉伸，各占 1/3
+            row1.addLayout(box, 1)
 
             self.stat_labels[key] = val
+            self.stat_header_labels[key] = lbl
 
-        row1.addStretch()
         self.vBoxLayout.addLayout(row1)
 
         # ==============================================================
@@ -97,11 +99,11 @@ class HomeStateInfo(CardWidget):
         # ==============================================================
         # 通行证
         # ==============================================================
-        passHeader = QLabel("通行证")
-        passHeader.setStyleSheet("font-size: 13px; font-weight: bold; color: #cccccc;")
-        self.vBoxLayout.addWidget(passHeader)
+        self.passHeader = QLabel(I18n.get(I18nKey.PASS))
+        self.passHeader.setStyleSheet("font-size: 13px; font-weight: bold; color: #cccccc;")
+        self.vBoxLayout.addWidget(self.passHeader)
 
-        self.passNameLabel = QLabel("等待游戏启动")
+        self.passNameLabel = QLabel(I18n.get(I18nKey.PASS_WAIT))
         self.passNameLabel.setStyleSheet("font-size: 16px; font-weight: bold; color: #ffffff;")
 
         self.passLevelLabel = QLabel("Lv.0")
@@ -135,18 +137,22 @@ class HomeStateInfo(CardWidget):
         rankHeader.setSpacing(4)
         rankIcon = IconWidget(FluentIcon.FLAG)
         rankIcon.setFixedSize(16, 16)
-        rankTitle = QLabel("云顶段位")
-        rankTitle.setStyleSheet("font-size: 13px; font-weight: bold; color: #cccccc;")
+        self.rankTitle = QLabel(I18n.get(I18nKey.TFT_RANK))
+        self.rankTitle.setStyleSheet("font-size: 13px; font-weight: bold; color: #cccccc;")
         rankHeader.addWidget(rankIcon)
-        rankHeader.addWidget(rankTitle)
+        rankHeader.addWidget(self.rankTitle)
         rankHeader.addStretch()
         self.vBoxLayout.addLayout(rankHeader)
 
-        self.rankValueLabel = QLabel("未定级")
+        self.rankValueLabel = QLabel(I18n.get(I18nKey.UNRANKED))
         self.rankValueLabel.setStyleSheet("font-size: 22px; font-weight: bold; color: #ffd700;")
         self.vBoxLayout.addWidget(self.rankValueLabel)
 
-        self.rankDetailLabel = QLabel("单双: -- | 灵活: -- | 狂暴: --")
+        self.rankDetailLabel = QLabel(
+            f"{I18n.get(I18nKey.SOLO_RANK)}: -- | "
+            f"{I18n.get(I18nKey.FLEX_RANK)}: -- | "
+            f"{I18n.get(I18nKey.TURBO_RANK)}: --"
+        )
         self.rankDetailLabel.setStyleSheet("font-size: 11px; color: #777777;")
         self.vBoxLayout.addWidget(self.rankDetailLabel)
 
@@ -154,7 +160,6 @@ class HomeStateInfo(CardWidget):
     # 内部方法
     # ==================================================================
     def _get_tier_color(self, rank_text: str) -> str:
-        """根据段位名返回对应颜色"""
         for tier, color in self.TIER_COLORS.items():
             if tier in rank_text:
                 return color
@@ -167,10 +172,10 @@ class HomeStateInfo(CardWidget):
     def update_stats(self, session_games=None, total_games=None, uptime_seconds=None):
         if session_games is not None:
             self.session_games = session_games
-            self.stat_labels["session_games"].setText(f"{session_games} 局")
+            self.stat_labels["session_games"].setText(f"{session_games} {I18n.get(I18nKey.GAME_UNIT)}")
         if total_games is not None:
             self.total_games = total_games
-            self.stat_labels["total_games"].setText(f"{total_games} 局")
+            self.stat_labels["total_games"].setText(f"{total_games} {I18n.get(I18nKey.GAME_UNIT)}")
         if uptime_seconds is not None:
             self.session_uptime = uptime_seconds
             h = uptime_seconds // 3600
@@ -192,17 +197,33 @@ class HomeStateInfo(CardWidget):
                 f"{main_pass['current_xp']} / {main_pass['total_xp']} XP"
             )
         else:
-            self.passNameLabel.setText("等待游戏启动")
+            self.passNameLabel.setText(I18n.get(I18nKey.PASS_WAIT))
             self.passLevelLabel.setText("Lv.0")
             self.passProgress.setMaximum(1)
             self.passProgress.setValue(0)
             self.passDetailLabel.setText("0 / 0 XP")
 
-        rank = lol.rank_tft if lol.rank_tft != "未定级" else "未定级"
+        rank = lol.rank_tft if lol.rank_tft != "未定级" else I18n.get(I18nKey.UNRANKED)
         self.rankValueLabel.setText(rank)
         self.rankValueLabel.setStyleSheet(
             f"font-size: 22px; font-weight: bold; color: {self._get_tier_color(rank)};"
         )
         self.rankDetailLabel.setText(
-            f"单双: {lol.rank_solo} | 灵活: {lol.rank_flex} | 狂暴: {lol.rank_tft_turbo}"
+            f"{I18n.get(I18nKey.SOLO_RANK)}: {lol.rank_solo} | "
+            f"{I18n.get(I18nKey.FLEX_RANK)}: {lol.rank_flex} | "
+            f"{I18n.get(I18nKey.TURBO_RANK)}: {lol.rank_tft_turbo}"
         )
+
+    def refresh_texts(self):
+        """语言切换后刷新所有文本"""
+        self.title.setText(I18n.get(I18nKey.STATS))
+        self.passHeader.setText(I18n.get(I18nKey.PASS))
+        self.rankTitle.setText(I18n.get(I18nKey.TFT_RANK))
+        for key, lbl in self.stat_header_labels.items():
+            if key == "session_games":
+                lbl.setText(I18n.get(I18nKey.THIS_GAME))
+            elif key == "total_games":
+                lbl.setText(I18n.get(I18nKey.TOTAL_GAMES))
+            elif key == "uptime":
+                lbl.setText(I18n.get(I18nKey.RUNTIME))
+        self.refresh_from_service()

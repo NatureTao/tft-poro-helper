@@ -37,6 +37,10 @@ class I18nKey:
     SOLO_RANK = "solo_rank"
     FLEX_RANK = "flex_rank"
     TURBO_RANK = "turbo_rank"
+    PASS_WAIT = "pass_wait"  # 等待游戏启动
+    UNRANKED = "unranked"  # 未定级
+    GAME_UNIT = "game_unit"  # 局（单位）
+    DEBUG_MODE_ON = "debug_mode_on"  # DEBUG 模式已开启，日志将保存到文件
 
 
 # ======================================================================
@@ -66,6 +70,10 @@ TRANSLATIONS: Dict[Language, Dict[str, str]] = {
         I18nKey.SOLO_RANK: "单双",
         I18nKey.FLEX_RANK: "灵活",
         I18nKey.TURBO_RANK: "狂暴",
+        I18nKey.PASS_WAIT: "等待游戏启动",
+        I18nKey.UNRANKED: "未定级",
+        I18nKey.GAME_UNIT: "局",
+        I18nKey.DEBUG_MODE_ON: "DEBUG 模式已开启，日志将保存到文件",
     },
     Language.ZH_TW: {
         I18nKey.START_BOT: "開始掛機",
@@ -88,8 +96,14 @@ TRANSLATIONS: Dict[Language, Dict[str, str]] = {
         I18nKey.SOLO_RANK: "單雙",
         I18nKey.FLEX_RANK: "彈性",
         I18nKey.TURBO_RANK: "狂暴",
+        I18nKey.PASS_WAIT: "等待遊戲啟動",
+        I18nKey.UNRANKED: "未定級",
+        I18nKey.GAME_UNIT: "局",
+        I18nKey.DEBUG_MODE_ON: "DEBUG 模式已開啟，日誌將儲存到檔案",
+        I18nKey.HOME_PAGE_NAME: "首頁",
     },
     Language.EN_US: {
+        I18nKey.HOME_PAGE_NAME: "Home",
         I18nKey.START_BOT: "Start Bot",
         I18nKey.STOP_BOT: "Stop Bot",
         I18nKey.MATCH: "Normal",
@@ -110,6 +124,10 @@ TRANSLATIONS: Dict[Language, Dict[str, str]] = {
         I18nKey.SOLO_RANK: "Solo",
         I18nKey.FLEX_RANK: "Flex",
         I18nKey.TURBO_RANK: "Turbo",
+        I18nKey.PASS_WAIT: "Waiting...",
+        I18nKey.UNRANKED: "Unranked",
+        I18nKey.GAME_UNIT: "games",
+        I18nKey.DEBUG_MODE_ON: "DEBUG mode enabled, logs will be saved to file",
     },
 }
 
