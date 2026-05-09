@@ -70,11 +70,7 @@ class Window(FluentWindow):
         self.navigationInterface.setMinimumExpandWidth(1180)
         self.addSubInterface(self.homeInterface, FIF.HOME, '首页', NavigationItemPosition.TOP)
 
-        armyIcon = QIcon("./icon/army.png")
-        if isDarkTheme():
-            armyIcon = QIcon("./icon/army_dark.png")
-
-        self.addSubInterface(self.troopInterface, armyIcon, '阵容')
+        self.addSubInterface(self.troopInterface, FIF.TILES, '阵容')
 
 
         self.addSubInterface(self.updateInterface, FIF.UPDATE, '更新')
