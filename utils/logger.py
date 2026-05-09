@@ -20,7 +20,7 @@ class Logger:
     """全局日志管理器"""
     _instance = None
     signal = None
-    
+
     def __new__(cls):
         if cls._instance is None:
             cls._instance = super().__new__(cls)
@@ -66,7 +66,7 @@ class Logger:
         self.file_logger.addHandler(fh)
 
         self._ensure_signal()
-        self.signal.info.emit("DEBUG 模式已开启，日志将保存到文件")
+        self.signal.info.emit("The DEBUG mode is on and logs are saved locally.")
 
     def disable_debug(self):
         """关闭 DEBUG 模式"""
@@ -75,7 +75,7 @@ class Logger:
             self.file_logger.handlers.clear()
             self.file_logger = None
         self._ensure_signal()
-        self.signal.info.emit("DEBUG 模式已关闭")
+        self.signal.info.emit("DEBUG mode is off.")
 
     def info(self, msg: str):
         """信息日志 → UI 控制台"""
