@@ -3,7 +3,7 @@
 """
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QVBoxLayout, QHBoxLayout, QLabel
-from PySide6.QtGui import QTextCursor
+from PySide6.QtGui import QTextCursor, QFont
 from qfluentwidgets import CardWidget, TextEdit, FluentIcon, IconWidget, PushButton
 
 from ui.i18n import I18n, I18nKey
@@ -31,9 +31,11 @@ class HomeConsole(CardWidget):
         icon.setFixedSize(16, 16)
 
         self.title = QLabel(I18n.get(I18nKey.RUN_LOG))
-        self.title.setStyleSheet(
-            "font-size: 14px; font-weight: bold; color: #cccccc; font-family: 'SimHei';"
-        )
+        title_font = QFont()
+        title_font.setPointSize(12)
+        title_font.setWeight(QFont.Weight.DemiBold)
+        self.title.setFont(title_font)
+        self.title.setStyleSheet("color: #cccccc;")
 
         tabBar.addWidget(icon)
         tabBar.addWidget(self.title)

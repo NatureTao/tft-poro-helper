@@ -3,12 +3,12 @@
 左侧：头像 + 玩家名称（垂直居中）
 """
 from PySide6.QtCore import Qt, Signal, QRunnable, QObject
-from PySide6.QtGui import QPixmap
+from PySide6.QtGui import QPixmap, QFont
 from PySide6.QtWidgets import QHBoxLayout, QVBoxLayout, QLabel
 from qfluentwidgets import CardWidget
 
 from ui.RadialGauge import PlayerProfileWidget
-from ui.service import lol
+from services.lol_client_service import lol
 
 
 class HomeUserInfo(CardWidget):
@@ -31,9 +31,15 @@ class HomeUserInfo(CardWidget):
 
         self.profile = PlayerProfileWidget(width=160, height=160)
 
-        self.playerName = QLabel("Poro")
-        self.playerName.setStyleSheet("font-size: 20px; color: #cccccc;")
+        self.playerName = QLabel("")
+        self.playerName.setStyleSheet("color: #cccccc;")
         self.playerName.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        # 用 QFont 设大小
+        font = QFont()
+        font.setPointSize(12)
+        font.setWeight(QFont.Weight.Medium)
+        self.playerName.setFont(font)
 
         leftVBox.addWidget(self.profile)
         leftVBox.addWidget(self.playerName)

@@ -2,6 +2,7 @@
 import threading
 
 from PySide6.QtCore import Qt, QTimer, QThreadPool
+from PySide6.QtGui import QFont
 from PySide6.QtWidgets import QFrame, QVBoxLayout, QHBoxLayout
 from qfluentwidgets import FluentIcon, PushButton
 
@@ -38,6 +39,11 @@ class Home(QFrame):
         self.userInfoModule = HomeUserInfo(self)
         self.startBtn = PushButton(FluentIcon.PLAY_SOLID, I18n.get(I18nKey.START_BOT))
         self.startBtn.setFixedHeight(120)
+        start_font = QFont()
+        start_font.setPointSize(14)
+        start_font.setWeight(QFont.Weight.DemiBold)
+        self.startBtn.setFont(start_font)
+        self.startBtn.clicked.connect(self._on_start_clicked)
         self.startBtn.clicked.connect(self._on_start_clicked)
 
         userVBox.addWidget(self.userInfoModule)
@@ -95,4 +101,6 @@ class Home(QFrame):
 
     def _refresh_client_data(self):
         task = RefreshTask(self.userInfoModule.updateData)
+        # 同时刷新统计模块
+        task.signals.finished.connect(self.statsModule.refresh_from_service)
         QThreadPool.globalInstance().start(task)

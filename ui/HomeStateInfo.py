@@ -4,10 +4,11 @@
 自适应高度，与日志区一起拉伸
 """
 from PySide6.QtCore import Qt
+from PySide6.QtGui import QFont
 from PySide6.QtWidgets import QVBoxLayout, QHBoxLayout, QLabel, QWidget
 from qfluentwidgets import CardWidget, FluentIcon, IconWidget, ProgressBar
 
-from ui.service import lol
+from services.lol_client_service import lol
 from ui.i18n import I18n, I18nKey
 
 
@@ -38,13 +39,28 @@ class HomeStateInfo(CardWidget):
         self.vBoxLayout.setContentsMargins(18, 14, 18, 14)
         self.vBoxLayout.setSpacing(10)
 
+        # ---- 字体 ----
+        title_font = QFont()
+        title_font.setPointSize(12)
+        title_font.setWeight(QFont.Weight.DemiBold)
+
+        normal_font = QFont()
+        normal_font.setPointSize(12)
+
+        small_font = QFont()
+        small_font.setPointSize(8)
+        small_font.setWeight(QFont.Weight.Light)
+
+        big_font = QFont()
+        big_font.setPointSize(14)
+        big_font.setWeight(QFont.Weight.DemiBold)
+
         # ==============================================================
         # 标题
         # ==============================================================
         self.title = QLabel(I18n.get(I18nKey.STATS))
-        self.title.setStyleSheet(
-            "font-size: 16px; font-weight: bold; color: #ffffff; font-family: 'SimHei';"
-        )
+        self.title.setFont(title_font)
+        self.title.setStyleSheet("color: #ffffff;")
         self.title.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.vBoxLayout.addWidget(self.title)
 
@@ -71,12 +87,14 @@ class HomeStateInfo(CardWidget):
             icon = IconWidget(getattr(FluentIcon, icon_key))
             icon.setFixedSize(16, 16)
             lbl = QLabel(I18n.get(label_key))
-            lbl.setStyleSheet("font-size: 12px; color: #888888; font-family: 'SimHei';")
+            lbl.setFont(small_font)
+            lbl.setStyleSheet("color: #888888;")
             header.addWidget(icon)
             header.addWidget(lbl)
 
-            val = QLabel("0 局" if suffix == "局" else suffix)
-            val.setStyleSheet("font-size: 22px; font-weight: bold; color: #ffffff;")
+            val = QLabel(f"0 {I18n.get(I18nKey.GAME_UNIT)}" if suffix == "局" else suffix)
+            val.setFont(big_font)
+            val.setStyleSheet("color: #ffffff;")
             val.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
             box.addLayout(header)
@@ -100,14 +118,17 @@ class HomeStateInfo(CardWidget):
         # 通行证
         # ==============================================================
         self.passHeader = QLabel(I18n.get(I18nKey.PASS))
-        self.passHeader.setStyleSheet("font-size: 13px; font-weight: bold; color: #cccccc;")
+        self.passHeader.setFont(normal_font)
+        self.passHeader.setStyleSheet("color: #cccccc;")
         self.vBoxLayout.addWidget(self.passHeader)
 
         self.passNameLabel = QLabel(I18n.get(I18nKey.PASS_WAIT))
-        self.passNameLabel.setStyleSheet("font-size: 16px; font-weight: bold; color: #ffffff;")
+        self.passNameLabel.setFont(normal_font)
+        self.passNameLabel.setStyleSheet("color: #ffffff;")
 
         self.passLevelLabel = QLabel("Lv.0")
-        self.passLevelLabel.setStyleSheet("font-size: 26px; font-weight: bold; color: #12aa9c;")
+        self.passLevelLabel.setFont(title_font)
+        self.passLevelLabel.setStyleSheet("color: #12aa9c;")
 
         self.passProgress = ProgressBar()
         self.passProgress.setFixedHeight(8)
@@ -115,7 +136,8 @@ class HomeStateInfo(CardWidget):
         self.passProgress.setValue(0)
 
         self.passDetailLabel = QLabel("0 / 0 XP")
-        self.passDetailLabel.setStyleSheet("font-size: 11px; color: #888888;")
+        self.passDetailLabel.setFont(small_font)
+        self.passDetailLabel.setStyleSheet("color: #888888;")
 
         self.vBoxLayout.addWidget(self.passNameLabel)
         self.vBoxLayout.addWidget(self.passLevelLabel)
@@ -138,14 +160,16 @@ class HomeStateInfo(CardWidget):
         rankIcon = IconWidget(FluentIcon.FLAG)
         rankIcon.setFixedSize(16, 16)
         self.rankTitle = QLabel(I18n.get(I18nKey.TFT_RANK))
-        self.rankTitle.setStyleSheet("font-size: 13px; font-weight: bold; color: #cccccc;")
+        self.rankTitle.setFont(normal_font)
+        self.rankTitle.setStyleSheet("color: #cccccc;")
         rankHeader.addWidget(rankIcon)
         rankHeader.addWidget(self.rankTitle)
         rankHeader.addStretch()
         self.vBoxLayout.addLayout(rankHeader)
 
         self.rankValueLabel = QLabel(I18n.get(I18nKey.UNRANKED))
-        self.rankValueLabel.setStyleSheet("font-size: 22px; font-weight: bold; color: #ffd700;")
+        self.rankValueLabel.setFont(big_font)
+        self.rankValueLabel.setStyleSheet("color: #ffd700;")
         self.vBoxLayout.addWidget(self.rankValueLabel)
 
         self.rankDetailLabel = QLabel(
@@ -153,7 +177,8 @@ class HomeStateInfo(CardWidget):
             f"{I18n.get(I18nKey.FLEX_RANK)}: -- | "
             f"{I18n.get(I18nKey.TURBO_RANK)}: --"
         )
-        self.rankDetailLabel.setStyleSheet("font-size: 11px; color: #777777;")
+        self.rankDetailLabel.setFont(small_font)
+        self.rankDetailLabel.setStyleSheet("color: #777777;")
         self.vBoxLayout.addWidget(self.rankDetailLabel)
 
     # ==================================================================
@@ -203,10 +228,10 @@ class HomeStateInfo(CardWidget):
             self.passProgress.setValue(0)
             self.passDetailLabel.setText("0 / 0 XP")
 
-        rank = lol.rank_tft if lol.rank_tft != "未定级" else I18n.get(I18nKey.UNRANKED)
+        rank = lol.rank_tft if lol.rank_tft != "--" else I18n.get(I18nKey.UNRANKED)
         self.rankValueLabel.setText(rank)
         self.rankValueLabel.setStyleSheet(
-            f"font-size: 22px; font-weight: bold; color: {self._get_tier_color(rank)};"
+            f"color: {self._get_tier_color(rank)};"
         )
         self.rankDetailLabel.setText(
             f"{I18n.get(I18nKey.SOLO_RANK)}: {lol.rank_solo} | "
@@ -226,4 +251,11 @@ class HomeStateInfo(CardWidget):
                 lbl.setText(I18n.get(I18nKey.TOTAL_GAMES))
             elif key == "uptime":
                 lbl.setText(I18n.get(I18nKey.RUNTIME))
+
+        # 刷新统计数字单位
+        self.update_stats(
+            session_games=self.session_games,
+            total_games=self.total_games,
+            uptime_seconds=self.session_uptime
+        )
         self.refresh_from_service()
