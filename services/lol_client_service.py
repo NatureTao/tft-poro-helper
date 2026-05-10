@@ -68,8 +68,6 @@ class LOLService:
         'CHALLENGER': '王者',
     }
 
-
-
     # 队列名称 → 对象属性名
     RANK_QUEUES = [
         ('RANKED_SOLO_5x5',      'rank_solo'),        # 单双排
@@ -97,7 +95,7 @@ class LOLService:
         self.totalLevelXP: int = 0          # 升级所需总经验
 
         # ---- 玩家基本信息 ----
-        self.gameName: str = "未知"          # 游戏昵称
+        self.gameName: str = "等待游戏启动"          # 游戏昵称
         self.tagLine: str = "未知"           # 后缀标签 (#后面的部分)
         self.profileIconId: int = 0         # 头像 ID
         self.avatar: Optional[bytes] = None  # 头像图片二进制数据
@@ -115,11 +113,11 @@ class LOLService:
         self.tft_star_fragments: int = 0        # 星之碎片
 
         # ---- 段位（所有模式） ----
-        self.rank_solo: str = "未定级"
-        self.rank_flex: str = "未定级"
-        self.rank_tft: str = "未定级"
-        self.rank_tft_turbo: str = "未定级"
-        self.rank_tft_double: str = "未定级"
+        self.rank_solo: str = "--"
+        self.rank_flex: str = "--"
+        self.rank_tft: str = "--"
+        self.rank_tft_turbo: str = "--"
+        self.rank_tft_double: str = "--"
 
         # 初始化时自动刷新一次
         self.refresh_client()
