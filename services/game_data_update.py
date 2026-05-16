@@ -117,14 +117,95 @@ class GameDataUpdate:
 
                 except Exception as e:
                     print(e,traceback.format_exc())
-            # TODO 其他数据源
+
+            case "QQ":
+                import re
+                def clean_name(x: str) -> str:
+                    x = re.sub(r'</?rules>', '', x)
+                    x = re.sub(r'\s+', ' ', x).strip()
+                    return x
+
+                # ===== 1 清洗英雄棋子 =====
+                chess_url = "https://game.gtimg.cn/images/lol/act/img/tft/js/chess.js"
+                chess_data = requests.get(chess_url, headers=self.headers, timeout=15).json()
+                for item in chess_data.get("data", []):
+                    name = item.get("displayName", "")
+                    if not name:
+                        continue
+                    traits = []
+                    if item.get("races"):
+                        traits.append(item["races"])
+                    if item.get("jobs"):
+                        for j in item["jobs"].split(","):
+                            j = j.strip()
+                            if j:
+                                traits.append(j)
+                    self.CHAMPIONS[name] = {
+                        "apiName": item.get("hero_EN_name", ""),
+                        "cost": int(item.get("price", 1)),
+                        "size": 1,
+                        "traits": traits,
+                    }
+
+                # ===== 2 清洗装备 =====
+                equip_url = "https://game.gtimg.cn/images/lol/act/img/tft/js/equip.js"
+                equip_data = requests.get(equip_url, headers=self.headers, timeout=15).json()
+                equip_id_to_name = {}
+                for item in equip_data.get("data", []):
+                    eid = item.get("equipId", "")
+                    name = clean_name(item.get("name", ""))
+                    if eid and name:
+                        equip_id_to_name[eid] = name
+                        self.ALL_ITEMS.add(name)
+
+                for item in equip_data.get("data", []):
+                    name = clean_name(item.get("name", ""))
+                    formula = item.get("formula", "")
+                    if formula:
+                        cn_composition = []
+                        for eid in formula.split(","):
+                            eid = eid.strip()
+                            cn_name = equip_id_to_name.get(eid, eid)
+                            if cn_name:
+                                cn_composition.append(cn_name)
+                        if cn_composition:
+                            self.COMBINABLE_ITEMS[name] = cn_composition
+
+                # ===== 3 清洗强化符文 =====
+                hex_url = "https://game.gtimg.cn/images/lol/act/img/tft/js/hex.js"
+                hex_data = requests.get(hex_url, headers=self.headers, timeout=15).json()
+                for item in hex_data.get("data", {}).values():
+                    if isinstance(item, dict) and item.get("type") != "0":
+                        name = item.get("name", "")
+                        if name:
+                            self.ALL_AUGMENTS.append(name)
+
+                # ===== 4 清洗羁绊 =====
+                race_url = "https://game.gtimg.cn/images/lol/act/img/tft/js/race.js"
+                job_url = "https://game.gtimg.cn/images/lol/act/img/tft/js/job.js"
+
+                for url in [race_url, job_url]:
+                    trait_data = requests.get(url, headers=self.headers, timeout=15).json()
+                    for item in trait_data.get("data", []):
+                        name = item.get("name", "")
+                        color_list = item.get("race_color_list") or item.get("job_color_list") or ""
+                        if not name or not color_list:
+                            continue
+                        breakpoints = []
+                        for pair in color_list.split(","):
+                            parts = pair.split(":")
+                            if len(parts) >= 1 and parts[0].isdigit():
+                                breakpoints.append(int(parts[0]))
+                        if breakpoints:
+                            self.TRAITS[name] = sorted(breakpoints)
+
             case _:
                 pass
 
 
 # 调试
 if __name__ == "__main__":
-    gameData = GameDataUpdate(origin="META_TFT",language="CN",tft_set="17")
+    gameData = GameDataUpdate(origin="QQ",language="CN",tft_set="17")
     print(gameData)
     gameData.pull_latest_data()
     print(gameData.COMBINABLE_ITEMS)
