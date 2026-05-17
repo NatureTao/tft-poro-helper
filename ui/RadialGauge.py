@@ -40,6 +40,7 @@ class RadialGauge(ProgressBar):
         self.setFixedSize(diameter, diameter)
         self.progressColor = QColor("#12aa9c")
 
+
     def paintEvent(self, e):
         painter = QPainter(self)
         painter.setRenderHints(QPainter.RenderHint.Antialiasing)
@@ -163,7 +164,11 @@ class PlayerProfileWidget(QWidget):
         scale = width / (RING_SIZE + BADGE_WIDGET_W // 2)
         ring_d = int(RING_SIZE * scale)
         ring_x = (width - ring_d) // 2
-        avatar_s = int((RING_SIZE - RING_STROKE * 2 - AVATAR_GAP * 2) * scale)
+
+        # 头像 = 圆环内径 - 间距（修正居中的关键）
+        inner = ring_d - int(RING_STROKE * scale) * 2
+        avatar_s = inner - AVATAR_GAP * 2
+
         badge_w = int(BADGE_WIDGET_W * scale)
         badge_h = int(BADGE_WIDGET_H * scale)
         overlap = int(BADGE_OVERLAP * scale)
@@ -181,6 +186,8 @@ class PlayerProfileWidget(QWidget):
         by = ring_d - overlap
         self.badge.move(bx, by)
         self.setFixedSize(width, ring_d + badge_h - overlap)
+
+
 
     def set_default_avatar(self):
         pix = QPixmap("icon/default.jpg")
