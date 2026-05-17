@@ -32,13 +32,12 @@ def load_squad(squad_name):
         return None
 
 
-def game_loop(message_queue: multiprocessing.Queue, squad_data=None):
+def game_loop(message_queue: multiprocessing.Queue, squad_data=None, smart_mode=False):
     """机器人主循环：匹配 → 游戏 → 再匹配"""
     counter = 0
 
-    # 显示基本信息
-    logger.info("TFT OCR BOT 已启动")
-    logger.info("Set15：天下无双格斗大赛")
+    logger.info("TFT PORO HELPER 已启动")
+    logger.info("Set17：天下无双格斗大赛")
 
     if settings.AUTO_POWER_OFF:
         logger.info("自动关机功能已开启")
@@ -50,6 +49,7 @@ def game_loop(message_queue: multiprocessing.Queue, squad_data=None):
     else:
         game_mode = f"未知模式 (ID:{settings.QUEUE_ID})"
     logger.info(f"当前挂机模式: {game_mode}")
+    logger.info(f"阵容模式: {'智能推荐' if smart_mode else '固定阵容'}")
 
     while True:
         if counter == settings.NUMBER_OF_HANGING_UP_GAMES and settings.AUTO_POWER_OFF:
@@ -62,11 +62,10 @@ def game_loop(message_queue: multiprocessing.Queue, squad_data=None):
             auto_queue.queue()
             logger.info("匹配成功，进入游戏")
 
-            # 创建游戏实例，传入 message_queue 用于推送状态
-            game_instance = Game(message_queue)
+            game_instance = Game(message_queue, smart_mode=smart_mode)
 
-            if squad_data:
-                logger.info("使用阵容配置进行游戏")
+            if squad_data and not smart_mode:
+                logger.info("使用固定阵容配置进行游戏")
 
             counter += 1
             logger.info(f"第 {counter} 局完成")

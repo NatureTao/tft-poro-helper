@@ -15,18 +15,23 @@ class BotController:
         self.is_running = False
         self.is_paused = False
         self.stop_after_game = False
+        self.smart_mode = False
 
-    def start(self, squad_name=None):
-        """启动机器人"""
+    def start(self, squad_name=None, smart_mode=False):
+        """
+        启动机器人
+
+        Args:
+            squad_name: 固定阵容名称（smart_mode=False 时使用）
+            smart_mode: True=智能推荐模式，False=固定阵容模式
+        """
         if self.is_running:
             return
 
         self.is_running = True
         self.is_paused = False
         self.stop_after_game = False
-
-        # 延迟导入，仅在启动时加载
-        from game_loop import game_loop, load_squad
+        self.smart_mode = smart_mode
 
         # 启动 overlay 子进程
         from overlay import run_overlay
@@ -38,19 +43,20 @@ class BotController:
         self.overlay_process.start()
 
         # 加载阵容
+        from game_loop import game_loop, load_squad
         squad_data = None
-        if squad_name:
+        if not smart_mode and squad_name:
             squad_data = load_squad(squad_name)
 
         # 启动游戏循环
         self.game_process = multiprocessing.Process(
             target=game_loop,
-            args=(self.message_queue, squad_data),
+            args=(self.message_queue, squad_data, smart_mode),
             daemon=True
         )
         self.game_process.start()
-
         self._send_status()
+
 
     def stop(self):
         """停止机器人"""
