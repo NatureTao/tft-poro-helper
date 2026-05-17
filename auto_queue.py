@@ -1,5 +1,5 @@
 """
-处理进入游戏
+处理进入游戏：创建房间 → 匹配 → 自动接受
 """
 import os
 import re
@@ -10,175 +10,183 @@ import requests
 import urllib3
 
 import settings
+from utils.logger import logger
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-os.system('chcp 65001')  # 设置cmd窗口字符
+
+
+def get_client() -> tuple:
+    """获取英雄联盟客户端端口和令牌"""
+    logger.info("正在获取客户端连接信息...")
+
+    cmd = (
+        'powershell -Command "'
+        'Get-CimInstance Win32_Process -Filter \'Name=\\"LeagueClientUx.exe\\"\' | '
+        'Select-Object -ExpandProperty CommandLine'
+        '"'
+    )
+    re_app_port = re.compile(r'--app-port=([0-9]*)')
+    re_remoting_auth_token = re.compile(r'--remoting-auth-token=([\w-]*)')
+
+    while True:
+        output = "".join(os.popen(cmd).readlines())
+        if output.strip():
+            app_port = re.findall(re_app_port, output)[0]
+            token = re.findall(re_remoting_auth_token, output)[0]
+            server_url = f"https://127.0.0.1:{app_port}"
+            logger.info(f"客户端已连接 → {server_url}")
+            return token, server_url
+        logger.warning("客户端未启动，10秒后重试...")
+        sleep(10)
 
 
 def create_lobby(client_info: tuple) -> bool:
-    """创建一个房间"""
-    payload: dict[str, int] = {"queueId": settings.QUEUE_ID}
-    payload: dict[str, int] = json.dumps(payload)
+    """创建房间"""
+    payload = json.dumps({"queueId": settings.QUEUE_ID})
     try:
-        status = requests.post(
+        resp = requests.post(
             f"{client_info[1]}/lol-lobby/v2/lobby/",
-            payload,
+            data=payload,
             auth=HTTPBasicAuth('riot', client_info[0]),
             timeout=10,
             verify=False,
         )
-        if status.status_code == 200:
-            print("  游戏大厅")
+        if resp.status_code == 200:
+            logger.info("房间已创建")
             return True
         return False
-    except ConnectionError:
+    except Exception as e:
+        logger.error(f"创建房间失败: {e}")
         return False
 
 
 def start_queue(client_info: tuple) -> bool:
-    """Starts queue"""
+    """开始匹配"""
     try:
-        status = requests.post(
+        resp = requests.post(
             f"{client_info[1]}/lol-lobby/v2/lobby/matchmaking/search",
             auth=HTTPBasicAuth('riot', client_info[0]),
             timeout=10,
             verify=False,
         )
-        if status.status_code == 204:
-            print("  队列中")
+        if resp.status_code == 204:
+            logger.info("匹配中...")
             return True
         return False
-    except ConnectionError:
+    except Exception as e:
+        logger.error(f"开始匹配失败: {e}")
         return False
 
 
-def check_queue(client_info: tuple) -> bool:
-    """检查队列，看看我们是否正在搜索"""
-    try:
-        status = requests.get(
-            f"{client_info[1]}/lol-lobby/v2/lobby/matchmaking/search-state",
-            auth=HTTPBasicAuth('riot', client_info[0]),
-            timeout=10,
-            verify=False,
-        )
-        return status.json()['searchState'] == 'Searching'
-    except ConnectionError:
-        return False
+def accept_queue(client_info: tuple) -> None:
+    """接受对局（延迟 2-5 秒模拟真人）"""
+    import random
+    delay = random.uniform(2, 5)
+    sleep(delay)
 
-
-def check_game_status(client_info: tuple) -> bool:
-    """检查我们是否在游戏中"""
-    try:
-        status = requests.get(
-            f"{client_info[1]}/lol-gameflow/v1/session",
-            auth=HTTPBasicAuth('riot', client_info[0]),
-            timeout=10,
-            verify=False,
-        )
-        return status.json().get("phase", "None")
-    except ConnectionError:
-        return False
-
-
-def accept_queue(client_info: tuple) -> bool:
-    """Accepts the queue"""
     requests.post(
         f"{client_info[1]}/lol-matchmaking/v1/ready-check/accept",
         auth=HTTPBasicAuth('riot', client_info[0]),
         timeout=10,
         verify=False,
     )
+    logger.info("已接受对局,等待其他玩家中...")
 
 
-def change_arena_skin(client_info: tuple) -> bool:
-    """更改竞技场皮肤为默认，其他竞技场皮肤有不同的坐标"""
+def check_game_status(client_info: tuple) -> str:
+    """检查当前游戏状态"""
     try:
-        status = requests.delete(
-            f"{client_info[1]}/lol-cosmetics/v1/selection/tft-map-skin",
+        resp = requests.get(
+            f"{client_info[1]}/lol-gameflow/v1/session",
             auth=HTTPBasicAuth('riot', client_info[0]),
             timeout=10,
             verify=False,
         )
-        if status.status_code == 204:
-            print("  更改棋盘皮肤为:默认")
-            return True
-        return False
-    except ConnectionError:
-        return False
-
-
-def get_client() -> tuple:
-    """获取英雄联盟客户端数据 如端口 令牌"""
-    print(f"=====自动匹配对局=====")
-    remoting_auth_token = ""
-    server_url = ""
-    re_app_port = re.compile(r'--app-port=([0-9]*)')  # 获取 app_port 的正则表达式
-    re_remoting_auth_token = re.compile(r'--remoting-auth-token=([\w-]*)')  # 获取 remoting_auth_token 的正则表达式
-
-    cmd = 'WMIC PROCESS WHERE name="LeagueClientUx.exe" GET commandline'  # 通过命令获取进程启动信息
-
-    got_lock_file = False
-    while not got_lock_file:
-        game_data = "".join(os.popen(cmd).readlines())
-        if '\n\n\n\n' != game_data:  # No Instance(s) Available.
-            app_port: str = re.findall(re_app_port, game_data)[0]
-            remoting_auth_token: str = re.findall(re_remoting_auth_token, game_data)[0]
-            server_url: str = f"https://127.0.0.1:{app_port}"
-            got_lock_file = True
-        else:
-            print("英雄联盟客户端未打开!10秒后再检测一次。")
-            sleep(10)
-    print("客户端已启动～(∠・ω< )⌒☆",flush=True)
-
-    return remoting_auth_token, server_url
-
-
-
+        return resp.json().get("phase", "None")
+    except Exception:
+        return "None"
 
 
 def reconnect(client_info: tuple) -> None:
-    """发现连接失败重新连接英雄"""
+    """重新连接游戏"""
     requests.post(
         f"{client_info[1]}/lol-gameflow/v1/reconnect",
         auth=HTTPBasicAuth('riot', client_info[0]),
         timeout=10,
         verify=False,
     )
+    logger.info("重新连接游戏")
+
+
+def change_arena_skin(client_info: tuple) -> None:
+    """更改棋盘皮肤为默认"""
+    try:
+        resp = requests.delete(
+            f"{client_info[1]}/lol-cosmetics/v1/selection/tft-map-skin",
+            auth=HTTPBasicAuth('riot', client_info[0]),
+            timeout=10,
+            verify=False,
+        )
+        if resp.status_code == 204:
+            logger.info("棋盘皮肤已设为默认")
+    except Exception as e:
+        logger.warning(f"更改棋盘皮肤失败: {e}")
 
 
 def queue() -> None:
-    """进入对局的方法"""
+    """进入对局的完整流程"""
+    client_info = get_client()
 
-    client_info: tuple = get_client()
-    # 检测是否在游戏内
+    # 1. 如果正在游戏中，等待结束
     while check_game_status(client_info) == "InProgress":
         sleep(2)
-    # 检测是否需要重新连接
+
+    # 2. 如果需要重连
     if check_game_status(client_info) == "Reconnect":
-        print("重新连接游戏")
+        logger.info("检测到重连状态")
         reconnect(client_info)
         return
-    # 上面条件都不是 创建一个房间
+
+    # 3. 创建房间
     while not create_lobby(client_info):
         sleep(3)
 
-    # 修改竞技场皮肤
+    # 4. 改皮肤
     change_arena_skin(client_info)
-
     sleep(3)
 
-    while state := check_game_status(client_info):
+    # 5. 状态机：匹配 → 接受 → 进入游戏
+    last_state = ""
+    while True:
+        state = check_game_status(client_info)
+        if state != last_state:
+            logger.info(f"游戏状态: {state}")
+            last_state = state
+
         if state == "None":
             create_lobby(client_info)
-        if state == "Lobby":
+        elif state == "Lobby":
             start_queue(client_info)
-        if state == "ReadyCheck":
+        elif state == "ReadyCheck":
             accept_queue(client_info)
-            print("等待其他玩家接受")
-        if state == "InProgress":
+        elif state == "InProgress":
+            logger.info("对局开始！")
             return
         sleep(3)
 
 
-if __name__ == '__main__':
-    print(get_client())
+if __name__ == "__main__":
+    import settings
+    from utils.logger import logger
+
+    print("=" * 50)
+    print("  自动匹配测试")
+    print(f"  模式: {'排位' if settings.QUEUE_ID == 1100 else '匹配'}")
+    print("=" * 50)
+
+    try:
+        queue()
+    except KeyboardInterrupt:
+        logger.info("用户取消")
+    except Exception as e:
+        logger.error(f"异常: {e}")
