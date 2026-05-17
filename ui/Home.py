@@ -44,7 +44,6 @@ class Home(QFrame):
         start_font.setWeight(QFont.Weight.DemiBold)
         self.startBtn.setFont(start_font)
         self.startBtn.clicked.connect(self._on_start_clicked)
-        self.startBtn.clicked.connect(self._on_start_clicked)
 
         userVBox.addWidget(self.userInfoModule)
         userVBox.addSpacing(8)
