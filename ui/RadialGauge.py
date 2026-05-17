@@ -8,7 +8,7 @@ from PySide6.QtGui import (
 )
 from PySide6.QtWidgets import QWidget
 from qfluentwidgets import ProgressBar, isDarkTheme
-
+from pathlib import Path
 
 # ======================================================================
 # 基准样式参数（基于 RING_SIZE=140 设计，缩放时等比变换）
@@ -187,10 +187,9 @@ class PlayerProfileWidget(QWidget):
         self.badge.move(bx, by)
         self.setFixedSize(width, ring_d + badge_h - overlap)
 
-
-
     def set_default_avatar(self):
-        pix = QPixmap("icon/default.jpg")
+        avatar_path = Path(__file__).parent / "icon" / "default.jpg"
+        pix = QPixmap(str(avatar_path))
         if not pix.isNull():
             self.avatar.setPixmap(pix)
 
