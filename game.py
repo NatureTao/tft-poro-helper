@@ -19,7 +19,7 @@ from arena import Arena
 from vec4 import Vec4
 from vec2 import Vec2
 from utils.logger import logger
-
+import ocr
 
 class Game:
     """
@@ -173,6 +173,7 @@ class Game:
                     self.carousel_round()
                 elif self.round[0] in game_assets.SECOND_ROUND:
                     self.second_round()
+                    self.second_round()
                 elif self.round[0] in game_assets.ENCOUNTER_ROUNDS:
                     logger.info(f"[遇到对局] {self.round[0]} 不执行操作")
                     self.message_queue.put("CLEAR")
@@ -244,27 +245,79 @@ class Game:
         self.end_round_tasks()
 
     def carousel_round(self) -> None:
-        """
-        选秀回合
-        1-1: 手动选择（不自动操作）
-        其他: 自动右键抢棋子
-        """
+        """选秀回合：根据赛季调用不同逻辑"""
         logger.info(f"[选秀] {self.round[0]}")
         self.message_queue.put("CLEAR")
 
         if self.round[0] == "1-1":
-            # 开局选秀：等待手动完成
-            logger.info("  开局选秀，等待手动选择...")
+            logger.info("  本局星神介绍，等待进入1-2...")
             while self.round[0] == game_functions.get_round()[0]:
                 sleep(1)
-            logger.info("  选秀结束")
             return
 
-        if self.round[0] == "3-4":
-            self.arena.final_comp = True  # 3-4 后锁定决赛阵容
+        elif self.round[0] == "3-4":
+            # 确定使用阵容
+            self.arena.final_comp = True
 
-        logger.info("  等待选秀结束")
-        game_functions.get_champ_carousel(self.round[0])
+        # 按赛季分发选秀逻辑（2-4 / 3-4 / 4-4 都会执行）
+        self._handle_post_carousel()
+
+        # 等待选秀结束
+        logger.info("  等待选秀完成...")
+        while self.round[0] == game_functions.get_round()[0]:
+            sleep(1)
+
+
+
+    def _handle_post_carousel(self) -> None:
+        """选秀后的额外操作（不同赛季不同实现）"""
+        season = getattr(settings, 'TFT_SEASON', 's17')
+
+        if season == 's17':
+            self._pick_blessing_and_penguin()
+        # elif season == 's18':
+        #     self._pick_xxx()
+        else:
+            logger.info(f"  当前赛季 {season} 无选秀后额外操作")
+
+    def _pick_blessing_and_penguin(self) -> None:
+        """S17：星界赐福 + 企鹅棋子选择"""
+        import random
+
+        sleep(5)
+        # 星界赐福：随机
+        choice = random.randint(1, 2)
+        mk_functions.left_click(screen_coords.BLESSING_LOC[choice - 1].get_coords())
+        logger.info(f"  星界赐福：随机选择第 {choice} 个")
+        sleep(4)
+
+        # 企鹅棋子：OCR 识别
+        logger.info("  OCR 识别企鹅棋子...")
+        penguins = []
+        for coords in screen_coords.PENGUIN_POS:
+            text = ocr.get_text(screenxy=coords.get_coords(), scale=3)
+            name = self._extract_penguin_name(text)
+            name = arena_functions._match_champion_name(name)
+            penguins.append(name)
+        logger.info(f"  企鹅棋子: {penguins}")
+
+        target_heroes = set(self.arena.champs_to_buy.keys()) | set(self.arena.board_names)
+        for i, name in enumerate(penguins):
+            if name in target_heroes:
+                mk_functions.left_click(screen_coords.PENGUIN_LOC[i].get_coords())
+                logger.info(f"  选择企鹅棋子（在阵容中）: {name}")
+                return
+
+        i = random.randint(0, 2)
+        mk_functions.left_click(screen_coords.PENGUIN_LOC[i].get_coords())
+        logger.info(f"  随机选择企鹅棋子: {penguins[i]}")
+
+    def _extract_penguin_name(self, text: str) -> str:
+        """从 'X费:  XXX' 中提取英雄名"""
+        if ":" in text:
+            text = text.split(":")[-1].strip()
+        return arena_functions._match_champion_name(text)
+
 
     def pve_round(self) -> None:
         """
@@ -406,3 +459,31 @@ class Game:
 
         self.arena.get_label()         # 推送英雄名标签
         game_functions.default_pos()   # 鼠标归位
+
+
+if __name__ == "__main__":
+    import screen_coords
+    import ocr
+    import arena_functions
+    import mk_functions
+    import random
+    from time import sleep
+
+    print("等待5秒后测试星界赐福 + 企鹅棋子...")
+    sleep(5)
+
+    # 星界赐福：随机点击
+    choice = random.randint(1, 2)
+    print(f"点击星界赐福第 {choice} 个: {screen_coords.BLESSING_LOC[choice - 1].get_coords()}")
+    mk_functions.left_click(screen_coords.BLESSING_LOC[choice - 1].get_coords())
+    sleep(1)
+
+    # 企鹅棋子 OCR
+    print("\n企鹅棋子 OCR 识别结果:")
+    for i, coords in enumerate(screen_coords.PENGUIN_POS):
+        text = ocr.get_text(screenxy=coords.get_coords(), scale=3)
+        # 提取 "X费: XXX" → "XXX"
+        if ":" in text:
+            text = text.split(":")[-1].strip()
+        name = arena_functions._match_champion_name(text)
+        print(f"  位置{i+1}: 原始='{text}' → 匹配='{name}'")

@@ -19,6 +19,8 @@ if os.path.exists(basePath):
 else:
     print("未找到文件夹")
 
+"""版本号"""
+TFT_SEASON = "s17"
 
 """系统设置"""
 GAME_HWND_NAME = existingData["系统设置"]["游戏窗口"]  # 检测游戏加载窗口名
