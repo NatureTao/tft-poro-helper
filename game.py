@@ -31,28 +31,47 @@ class Game:
     - 循环检测回合变化 → 分发到对应回合处理方法
     """
 
-    def __init__(self, message_queue: multiprocessing.Queue, smart_mode=False) -> None:
+    def __init__(self, message_queue: multiprocessing.Queue, squad_data=None, smart_mode=False) -> None:
         """
         初始化游戏实例
 
         Args:
             message_queue: 多进程消息队列（推送状态/日志到 overlay）
+            squad_data: 阵容数据（固定阵容为单个 dict，智能模式为列表）
             smart_mode: 是否启用智能推荐模式
         """
-        importlib.reload(game_assets)         # 重新加载游戏数据（赛季更新时生效）
+        importlib.reload(game_assets)
         self.message_queue = message_queue
-        self.arena = Arena(self.message_queue)  # 棋盘/备战区状态管理器
-        self.round: list[str, int] = ["0-0", 0]  # 当前回合 [回合名, OCR置信度]
+        self.arena = Arena(self.message_queue)
+        self.round: list[str, int] = ["0-0", 0]
         self.time = None
-        self.start_time = None                 # 对局开始时间戳（用于自动投降计时）
-        self.forfeit_time: int = settings.FORFEIT_TIME + random.randint(50, 150)  # 随机投降时间
-        self.found_window = False              # 是否找到游戏窗口
+        self.start_time = None
+        self.forfeit_time: int = settings.FORFEIT_TIME + random.randint(50, 150)
+        self.found_window = False
+
+        # 阵容模式初始化
+        self.smart_mode = smart_mode
+        self.scorer = None
+        self.fixed_squad = None
+
+        if smart_mode and squad_data:
+            from services.tft_scorer import TFTScorer
+            self.scorer = TFTScorer()
+            self.scorer._squads = squad_data  # 直接用预加载的阵容列表
+            self.arena.scorer = self.scorer  # 传给 arena
+            logger.info(f"智能推荐模式：{len(squad_data)} 套阵容就绪")
+        elif squad_data and not smart_mode:
+            self.fixed_squad = squad_data  # 固定阵容模式
+            self.arena.fixed_squad = squad_data
+            logger.info(f"固定阵容模式：{squad_data.get('_name', '未知阵容')}")
+        else:
+            logger.info("固定阵容模式（从 squads 目录加载）")
 
         logger.info("寻找游戏窗口")
         while not self.found_window:
-            win32gui.EnumWindows(self.callback, None)  # 遍历所有窗口
+            win32gui.EnumWindows(self.callback, None)
             sleep(1)
-        self.loading_screen()                  # 等待加载 → 进入主循环
+        self.loading_screen()
 
     # ==================================================================
     # 窗口检测

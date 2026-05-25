@@ -62,7 +62,7 @@ def game_loop(message_queue: multiprocessing.Queue, squad_data=None, smart_mode=
             auto_queue.queue()
             logger.info("匹配成功，进入游戏")
 
-            game_instance = Game(message_queue, smart_mode=smart_mode)
+            game_instance = Game(message_queue, squad_data=squad_data, smart_mode=smart_mode)
 
             if squad_data and not smart_mode:
                 logger.info("使用固定阵容配置进行游戏")

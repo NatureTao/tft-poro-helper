@@ -44,6 +44,8 @@ class Arena:
         self.spam_roll = False
         self.HP: list = [None]
         self.active_portal: str = ""
+        self.scorer = None  # 智能评分引擎（由 Game 注入）
+        self.fixed_squad = None  # 固定阵容数据（由 Game 注入）
 
     def portal_augment(self) -> None:
         """检查区域扩展并相应地设置标志"""

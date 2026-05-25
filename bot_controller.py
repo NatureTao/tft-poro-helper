@@ -2,7 +2,7 @@
 机器人控制器：管理 game_loop 和 overlay 进程
 """
 import multiprocessing
-
+from utils.logger import logger
 
 class BotController:
     """控制机器人的启动、暂停、停止"""
@@ -18,13 +18,6 @@ class BotController:
         self.smart_mode = False
 
     def start(self, squad_name=None, smart_mode=False):
-        """
-        启动机器人
-
-        Args:
-            squad_name: 固定阵容名称（smart_mode=False 时使用）
-            smart_mode: True=智能推荐模式，False=固定阵容模式
-        """
         if self.is_running:
             return
 
@@ -42,11 +35,17 @@ class BotController:
         )
         self.overlay_process.start()
 
-        # 加载阵容
+        # 加载阵容数据（固定阵容 or 智能评分阵容列表）
         from game_loop import game_loop, load_squad
         squad_data = None
-        if not smart_mode and squad_name:
+        if smart_mode:
+            # 智能模式：加载所有 squad 文件，传给评分引擎
+            squad_data = self._load_all_squads()
+            logger.info(f"智能推荐模式：加载了 {len(squad_data)} 套阵容")
+        elif squad_name:
+            # 固定阵容模式：只加载一个阵容
             squad_data = load_squad(squad_name)
+            logger.info(f"固定阵容模式：{squad_name}")
 
         # 启动游戏循环
         self.game_process = multiprocessing.Process(
@@ -57,6 +56,19 @@ class BotController:
         self.game_process.start()
         self._send_status()
 
+    def _load_all_squads(self) -> list:
+        """加载 squads/ 目录下所有阵容文件"""
+        import json
+        from pathlib import Path
+        squads = []
+        squads_dir = Path(__file__).parent / "squads"
+        if squads_dir.exists():
+            for f in squads_dir.glob("*.json"):
+                with open(f, "r", encoding="utf-8") as fp:
+                    squad = json.load(fp)
+                    squad["_name"] = f.stem
+                    squads.append(squad)
+        return squads
 
     def stop(self):
         """停止机器人"""
