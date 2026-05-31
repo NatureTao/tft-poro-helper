@@ -228,6 +228,9 @@ class Arena:
         while self.level > self.board_size:
             champion: Champion | None = self.have_champion()
             if champion is not None:
+                if self.locked_comp_heroes and champion.name not in self.locked_comp_heroes:
+                    logger.info(f"  跳过非阵容棋子[{champion.name}]（锁定后不上场）")
+                    break  # 不上非阵容棋，留备战席等 final_comp_check 处理
                 self.move_known(champion)
             elif self.unknown_in_bench():
                 self.move_unknown()
@@ -327,7 +330,7 @@ class Arena:
                 mk_functions.right_click(
                     screen_coords.BOARD_LOC[pos].get_coords()
                 )
-                sleep(3)  # 等待棋子信息面板加载
+                sleep(5)  # 等待棋子信息面板加载
                 champ_name = arena_functions._match_champion_name(
                     ocr.get_text(
                         screenxy=screen_coords.PANEL_NAME_LOC.get_coords(),
