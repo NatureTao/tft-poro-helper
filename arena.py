@@ -546,6 +546,8 @@ class Arena:
         elif len(champ.current_building) == 0:
             item_to_move: str | None = None
             for build_item in champ.build:
+                if build_item not in game_assets.FULL_ITEMS:
+                    continue  # 非合成装备（如武装装备）跳过
                 build_item_components: list = list(game_assets.FULL_ITEMS[build_item])
                 if item in build_item_components:
                     item_to_move = item
@@ -629,6 +631,8 @@ class Arena:
                 if isinstance(slot, Champion) and slot.name in self.locked_comp_heroes:
                     if slot.name not in self.board_names:
                         self.move_known(slot)
+            # 3. 重新计算 board_size 确保和实际一致
+            self.board_size = len(self.board) + len(self.board_unknown)
             return
 
         # === 固定阵容模式：原逻辑 ===
@@ -918,6 +922,7 @@ class Arena:
         """当金币等于或超过预定值时购买经验 4"""
         if arena_functions.fetch_gold() >= 4:
             mk_functions.buy_xp()
+            logger.info("  购买经验（buy_xp_round）")
 
     def pick_augment(self) -> None:
         """从用户定义的强化优先级列表中选择一个强化"""
