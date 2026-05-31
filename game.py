@@ -169,7 +169,7 @@ class Game:
                 count = 15
                 while count > 0:
                     if not game_functions.check_alive():
-                        self.message_queue.put("CLEAR")
+                        self.message_queue.put("GAME_OVER")
                         game_functions.exit_game()
                         break
                     sleep(1)

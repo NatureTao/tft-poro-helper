@@ -704,7 +704,7 @@ class Arena:
                 logger.info(f"  锁定阵容: {self.current_comp}")
                 # 跳转到买棋逻辑（不执行下面评分代码）
                 self._compute_min_gold()
-                self._buy_loop(speedy)
+                self._buy_loop()
                 return
 
             # 未锁定 → 正常评分

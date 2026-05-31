@@ -99,13 +99,14 @@ class Overlay(QWidget):
 
             if msg == "CLEAR":
                 self._clear_hero_labels()
-                # 重置左侧日志
+                continue
+
+            if msg == "GAME_OVER":
+                self._clear_hero_labels()
                 self.logLines = [""] * 15
                 for i, label in enumerate(self.logLabels):
                     label.setText("")
-                # 重置右侧推荐阵容
                 self.compLineLabel.hide()
-                # 重置状态摘要
                 self.statusLineLabel.setText("状态：未启动")
                 self.statusLineLabel.setStyleSheet("color: #888888; font-size: 11px; font-weight: bold;")
                 self.infoLineLabel.setText("对局：-- | 段位：-- | 通行证：--")
