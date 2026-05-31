@@ -91,7 +91,7 @@ class Arena:
                     self.bench[index] = Champion(
                         name=champ_name,
                         coords=screen_coords.BENCH_LOC[index].get_coords(),
-                        build=champ_comp.get("items", []).copy(),
+                        build=self._get_build_items(champ_name),
                         slot=index,
                         size=game_assets.CHAMPIONS[champ_name]["Board Size"],
                         final_comp=champ_comp.get("final_comp", False),
@@ -111,13 +111,21 @@ class Arena:
             if isinstance(slot, Champion) and not bench_occupied[index]:
                 self.bench[index] = None
 
+    def _get_build_items(self, name: str) -> list:
+        """获取英雄的预期装备列表：锁定阵容 > comps.COMP > 空"""
+        if self.locked_comp_squad:
+            items = self.locked_comp_squad.get("HERO", {}).get(name, {}).get("items", [])
+            if items:
+                return list(items)
+        return comps.COMP.get(name, {}).get("items", []).copy()
+
     def bought_champion(self, name: str, slot: int) -> None:
         """购买英雄 并创建英雄实例"""
         champ_comp = comps.COMP.get(name) or {}
         self.bench[slot] = Champion(
             name=name,
             coords=screen_coords.BENCH_LOC[slot].get_coords(),
-            build=champ_comp.get("items", []).copy(),
+            build=self._get_build_items(name),
             slot=slot,
             size=game_assets.CHAMPIONS[name]["Board Size"],
             final_comp=champ_comp.get("final_comp", False),
@@ -180,16 +188,16 @@ class Arena:
         self.board_size += champion.size
 
     def move_unknown(self) -> None:
-        """将未识别的英雄移动到棋盘上"""
+        """将未识别的英雄移动到棋盘上（优先后排）"""
         for index, champion in enumerate(self.bench):
             if isinstance(champion, str):
                 logger.info(f"  移动 {champion} 到棋盘")
                 mk_functions.left_click(screen_coords.BENCH_LOC[index].get_coords())
                 sleep(0.1)
+                # 使用 _next_free_slot() 找后排空位（和 move_known 一致）
+                slot = self._next_free_slot()
                 mk_functions.left_click(
-                    screen_coords.BOARD_LOC[
-                        self.unknown_slots[len(self.board_unknown)]
-                    ].get_coords()
+                    screen_coords.BOARD_LOC[slot].get_coords()
                 )
                 self.bench[index] = None
                 self.board_unknown.append(champion)
@@ -404,10 +412,8 @@ class Arena:
 
     def add_item_to_champs(self, item_index: int) -> None:
         """遍历棋盘中的英雄并检查英雄是否需要该装备"""
-        for champ_name in comps.COMP:
-            for champ in self.board:
-                if champ_name == champ.name:
-                    if champ.does_need_items() and self.items[item_index] is not None:
+        for champ in self.board:
+            if isinstance(champ, Champion) and champ.does_need_items() and self.items[item_index] is not None:
                         self.add_item_to_champ(item_index, champ)
                         if self.HP:
                             if (self.HP[0][1] <= settings.HEALTH and settings.RANDOM_ITEM) or \
@@ -601,6 +607,17 @@ class Arena:
                     self.board.remove(champ)
                     self.board_names.remove(champ.name)
                     self.board_size -= champ.size
+            # 1.5 清理 board_unknown 中不在锁定阵容的棋子（如1-1选秀的）
+            for i in reversed(range(len(self.board_unknown))):
+                name = self.board_unknown[i]
+                if isinstance(name, str) and name not in self.locked_comp_heroes and name not in ("?", ""):
+                    logger.info(f"  清理非阵容棋子[{name}]（board_unknown）")
+                    mk_functions.press_e(
+                        screen_coords.BOARD_LOC[self.unknown_slots[i]].get_coords()
+                    )
+                    self.board_unknown.pop(i)
+                    self.board_size -= 1
+
             # 2. 把备战席中阵容需要的棋子上场
             for slot in list(self.bench):
                 if isinstance(slot, Champion) and slot.name in self.locked_comp_heroes:
