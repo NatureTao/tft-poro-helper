@@ -695,11 +695,17 @@ class Arena:
             )
             if rankings:
                 self.current_comp = rankings[0]["name"]
+                self.locked_comp_squad = self._find_locked_squad()
                 self.locked_comp_heroes = {}
                 for h in rankings[0].get("heroes", []):
                     if h in game_assets.CHAMPIONS:
-                        self.locked_comp_heroes[h] = 3
-                self.locked_comp_squad = self._find_locked_squad()
+                        # 从阵容文件读取目标星级: star=2→3个, star=3→9个
+                        star = 2
+                        if self.locked_comp_squad:
+                            star = self.locked_comp_squad.get("HERO", {}).get(h, {}).get("star", 2)
+                        need = 9 if star >= 3 else 3
+                        self.locked_comp_heroes[h] = need
+                hero_info = ", ".join(f"{n}" for n in self.locked_comp_heroes)
                 logger.info(f"  阵容已锁定: {self.current_comp} ({len(self.locked_comp_heroes)} 个英雄)")
                 # 立即覆盖 champs_to_buy
                 self.champs_to_buy = dict(self.locked_comp_heroes)
