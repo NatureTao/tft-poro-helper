@@ -219,7 +219,7 @@ def check_bench_occupied() -> list:
     for positions in screen_coords.BENCH_HEALTH_POS:
         screen_capture = ImageGrab.grab(bbox=positions.get_coords())
         screenshot_array = np.array(screen_capture)
-        is_health_color = np.all(screenshot_array == [0, 255, 18], axis=-1)
+        is_health_color = np.all(screenshot_array == [0, 203, 15], axis=-1)
         occupied = any(np.convolve(is_health_color.reshape(-1), np.ones(5), mode='valid'))
         bench_occupied.append(occupied)
     return bench_occupied
@@ -285,3 +285,6 @@ bench_occupied_check()	check_bench_occupied()	动词在前
 valid_champ()	_match_champion_name()	明确是匹配
 valid_item()	_match_item_name()	明确是匹配
 """
+
+if __name__ == "__main__":
+    print(check_bench_occupied())

@@ -1,6 +1,7 @@
 """
 处理每回合游戏中发生的任务
 """
+
 import time
 from time import sleep, perf_counter
 import random
@@ -31,7 +32,7 @@ class Game:
     - 循环检测回合变化 → 分发到对应回合处理方法
     """
 
-    def __init__(self, message_queue: multiprocessing.Queue, squad_data=None, smart_mode=False) -> None:
+    def __init__(self, message_queue: multiprocessing.Queue, squad_data=None, smart_mode=False, game_count=1) -> None:
         """
         初始化游戏实例
 
@@ -39,15 +40,18 @@ class Game:
             message_queue: 多进程消息队列（推送状态/日志到 overlay）
             squad_data: 阵容数据（固定阵容为单个 dict，智能模式为列表）
             smart_mode: 是否启用智能推荐模式
+            game_count: 当前第几局
         """
         importlib.reload(game_assets)
         self.message_queue = message_queue
         self.arena = Arena(self.message_queue)
+        self.game_count = game_count
         self.round: list[str, int] = ["0-0", 0]
         self.time = None
         self.start_time = None
         self.forfeit_time: int = settings.FORFEIT_TIME + random.randint(50, 150)
         self.found_window = False
+        logger.signal.info.connect(lambda msg: self.message_queue.put(("LOG", msg)))
 
         # 阵容模式初始化
         self.smart_mode = smart_mode
@@ -72,6 +76,7 @@ class Game:
             win32gui.EnumWindows(self.callback, None)
             sleep(1)
         self.loading_screen()
+
 
     # ==================================================================
     # 窗口检测
@@ -152,6 +157,7 @@ class Game:
         每 0.5 秒检测一次回合变化，分发到对应处理方法
         检测到死亡 → 退出游戏 → 等待下一局
         """
+        logger.info(f"当前回合: {self.round}")
         ran_round: str = None          # 上一次处理的回合（避免重复执行）
         last_game_health: int = 100    # 上一次存活状态
 
@@ -168,6 +174,13 @@ class Game:
                         break
                     sleep(1)
                     count -= 1
+                # 对局结束 → 推送重置状态到 overlay
+                self.message_queue.put(("STATUS", {
+                    "running": False, "paused": False,
+                    "stop_after_game": False,
+                    "round": "", "comp_name": "",
+                    "game_count": self.game_count,
+                }))
                 break
 
             last_game_health = game_health
@@ -182,6 +195,8 @@ class Game:
 
             # 回合变化 → 分发
             if self.round[0] != ran_round:
+                logger.info(
+                    f"回合变化: {ran_round} → {self.round[0]}, PVE_ROUND={self.round[0] in game_assets.PVE_ROUND}")
                 if self.round[0] in game_assets.PVP_ROUND:
                     game_functions.default_pos()
                     self.pvp_round()
@@ -192,7 +207,6 @@ class Game:
                     self.carousel_round()
                 elif self.round[0] in game_assets.SECOND_ROUND:
                     self.second_round()
-                    self.second_round()
                 elif self.round[0] in game_assets.ENCOUNTER_ROUNDS:
                     logger.info(f"[遇到对局] {self.round[0]} 不执行操作")
                     self.message_queue.put("CLEAR")
@@ -200,7 +214,7 @@ class Game:
                 ran_round = self.round[0]
 
                 # 每个新阶段的第一回合 → 动态更新回合类型
-                if self.round[1] == 1 and self.round[0].split("-")[1] == "1":
+                if self.round[1] == 1 and self.round[0].split("-")[1] == "1" and int(self.round[0].split("-")[0]) >= 2:
                     logger.info("[当前回合]")
                     self.encounter_round_setup()
 
@@ -274,9 +288,10 @@ class Game:
                 sleep(1)
             return
 
-        elif self.round[0] == "3-4":
-            # 确定使用阵容
-            self.arena.final_comp = True
+        elif self.round[0] == "2-4":
+            # 2-4 锁定阵容
+            if not self.arena.final_comp:
+                self.arena.lock_current_comp()
 
         # 按赛季分发选秀逻辑（2-4 / 3-4 / 4-4 都会执行）
         self._handle_post_carousel()
@@ -286,6 +301,11 @@ class Game:
         while self.round[0] == game_functions.get_round()[0]:
             sleep(1)
 
+        # 选秀结束 → 同步状态：识别新棋子、清理不想要的
+        sleep(1)
+        self.arena.fix_bench_state()
+        self.arena.sync_board_state()
+        self.arena.bench_cleanup()
 
 
     def _handle_post_carousel(self) -> None:
@@ -375,9 +395,20 @@ class Game:
                 self.arena.pick_augment()
 
         # 核心操作流程
+        self.arena.identify_board_unknowns()  # 识别棋盘上 ? 未知棋子
         self.arena.fix_bench_state()      # 修复备战区状态（OCR 识别棋子）
         self.arena.spend_gold()            # 消费金币（买棋子/刷新/升级）
+        # 立即推送推荐阵容到 overlay
+        self.message_queue.put(("STATUS", {
+            "running": True,
+            "paused": False,
+            "stop_after_game": False,
+            "round": self.round[0],
+            "comp_name": self.arena.current_comp,
+            "game_count": self.game_count,
+        }))
         self.arena.move_champions()        # 把棋子从备战区移到棋盘
+        self.arena.sync_board_state()      # 同步：检测游戏自动上场的棋子
         self.arena.replace_unknown()       # 替换未识别的英雄
         if self.arena.final_comp:
             self.arena.final_comp_check()  # 决赛阵容检查
@@ -424,6 +455,7 @@ class Game:
             self.message_queue.put(("LOG", "战利品拾取完成"))
 
         # 核心操作流程
+        self.arena.identify_board_unknowns()  # 识别棋盘上 ? 未知棋子
         self.arena.fix_bench_state()
         self.arena.bench_cleanup()
 
@@ -431,7 +463,17 @@ class Game:
             self.arena.clear_anvil()
 
         self.arena.spend_gold(speedy=self.round[0] in game_assets.PICKUP_ROUNDS)
+        # 立即推送推荐阵容到 overlay
+        self.message_queue.put(("STATUS", {
+            "running": True,
+            "paused": False,
+            "stop_after_game": False,
+            "round": self.round[0],
+            "comp_name": self.arena.current_comp,
+            "game_count": self.game_count,
+        }))
         self.arena.move_champions()
+        self.arena.sync_board_state()   # 同步：检测游戏自动上场的棋子
         self.arena.replace_unknown()
 
         if self.arena.final_comp:
@@ -463,11 +505,24 @@ class Game:
             logger.info(f" 生命值：{self.arena.HP[0][1]}")
             logger.info(f" 排名：{self.arena.HP[0][0]}")
 
+            # 获取段位/通行证（子进程中独立读取 LCU）
+            try:
+                from services.lol_client_service import lol as _lol
+                _rank = _lol.rank_tft if _lol.rank_tft != "--" else "未定级"
+                _pass_lv = _lol.currentLevel
+            except Exception:
+                _rank = "--"
+                _pass_lv = "--"
+
             self.message_queue.put(("STATUS", {
                 "running": True,
                 "paused": False,
                 "stop_after_game": False,
                 "round": self.round[0],
+                "comp_name": self.arena.current_comp,
+                "game_count": self.game_count,
+                "rank": _rank,
+                "pass_level": _pass_lv,
             }))
 
             # 血量低于阈值 → 疯狂刷新找关键棋子

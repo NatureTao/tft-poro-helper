@@ -37,10 +37,10 @@ class Overlay(QWidget):
         self.setStyleSheet("background: transparent;")
 
     def setup_left_log(self):
-        """左侧：游戏实时日志 (0,870) ~ (260,1080)，底部往上滚动"""
+        """左侧：游戏实时日志，底部往上滚动，最多 15 条"""
         self.logCard = QWidget(self)
-        self.logCard.setFixedSize(260, 210)
-        self.logCard.move(0, 870)
+        self.logCard.setFixedSize(260, 280)
+        self.logCard.move(0, 800)
         self.logCard.setStyleSheet("background: transparent;")
 
         self.logLayout = QVBoxLayout(self.logCard)
@@ -49,13 +49,13 @@ class Overlay(QWidget):
         self.logLayout.setAlignment(Qt.AlignmentFlag.AlignBottom)
 
         self.logLabels = []
-        for _ in range(5):
+        for _ in range(15):
             lbl = QLabel("")
-            lbl.setStyleSheet("color: #aaaaaa; font-size: 11px; line-height: 16px;")
+            lbl.setStyleSheet("color:#FFFFFF; font-size: 10px; line-height: 16px; text-shadow: 1px 1px 3px rgba(0,0,0,0.9);")
             self.logLayout.addWidget(lbl)
             self.logLabels.append(lbl)
 
-        self.logLines = ["", "", "", "", ""]
+        self.logLines = [""] * 15
 
     def setup_right_status(self):
         """右侧：状态摘要 (1493,878) ~ (1743,1080)，宽250，底部对齐"""
@@ -72,6 +72,9 @@ class Overlay(QWidget):
         self.statusLineLabel = QLabel("状态：未启动")
         self.statusLineLabel.setStyleSheet("color: #cccccc; font-size: 11px;")
 
+        self.compLineLabel = QLabel("")
+        self.compLineLabel.setStyleSheet("color: #ffcc00; font-size: 11px; font-weight: bold;")
+
         self.infoLineLabel = QLabel("对局：-- | 段位：-- | 通行证：--")
         self.infoLineLabel.setStyleSheet("color: #cccccc; font-size: 11px;")
 
@@ -79,6 +82,7 @@ class Overlay(QWidget):
         self.hotkeyLineLabel.setStyleSheet("color: #cccccc; font-size: 11px;")
 
         rightLayout.addWidget(self.statusLineLabel)
+        rightLayout.addWidget(self.compLineLabel)
         rightLayout.addWidget(self.infoLineLabel)
         rightLayout.addWidget(self.hotkeyLineLabel)
 
@@ -95,6 +99,16 @@ class Overlay(QWidget):
 
             if msg == "CLEAR":
                 self._clear_hero_labels()
+                # 重置左侧日志
+                self.logLines = [""] * 15
+                for i, label in enumerate(self.logLabels):
+                    label.setText("")
+                # 重置右侧推荐阵容
+                self.compLineLabel.hide()
+                # 重置状态摘要
+                self.statusLineLabel.setText("状态：未启动")
+                self.statusLineLabel.setStyleSheet("color: #888888; font-size: 11px; font-weight: bold;")
+                self.infoLineLabel.setText("对局：-- | 段位：-- | 通行证：--")
                 continue
 
             msg_type = msg[0] if isinstance(msg, (list, tuple)) else msg
@@ -140,6 +154,14 @@ class Overlay(QWidget):
         self.statusLineLabel.setStyleSheet(
             f"color: {status_color}; font-size: 11px; font-weight: bold;"
         )
+
+        # 推荐阵容
+        comp_name = data.get("comp_name", "")
+        if comp_name:
+            self.compLineLabel.setText(f"{comp_name}")
+            self.compLineLabel.show()
+        else:
+            self.compLineLabel.hide()
 
         # 第二行：对局信息
         self.infoLineLabel.setText(

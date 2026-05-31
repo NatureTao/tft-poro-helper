@@ -28,7 +28,7 @@ class TFTScorer:
         )
     """
 
-    def __init__(self, squads_dir: str = "squads_qq"):
+    def __init__(self, squads_dir: str = "squads"):
         self._squads_dir = squads_dir
         self._squads: List[Dict] = []
         self._game_data: Dict = {}
@@ -95,6 +95,7 @@ class TFTScorer:
                 "name": squad.get("_name", "未知"),
                 "score": score,
                 "details": detail,
+                "heroes": list(squad.get("HERO", {}).keys()),
             })
 
         results.sort(key=lambda x: x["score"], reverse=True)

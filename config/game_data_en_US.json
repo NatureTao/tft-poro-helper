@@ -1,0 +1,2200 @@
+{
+  "champions": {
+    "Golem": {
+      "apiName": "TFT_BlueGolem",
+      "cost": 1,
+      "size": 1,
+      "traits": []
+    },
+    "Rift Scuttler": {
+      "apiName": "TFT9_SLIME_Crab",
+      "cost": 1,
+      "size": 1,
+      "traits": []
+    },
+    "Training Dummy": {
+      "apiName": "TFT_TrainingDummy",
+      "cost": 1,
+      "size": 1,
+      "traits": []
+    },
+    "TFT_BoardSlot": {
+      "apiName": "TFT_BoardSlot",
+      "cost": 0,
+      "size": 1,
+      "traits": []
+    },
+    "TFT_BenchSlot": {
+      "apiName": "TFT_BenchSlot",
+      "cost": 0,
+      "size": 1,
+      "traits": []
+    },
+    "TFT_ItemBenchSlot": {
+      "apiName": "TFT_ItemBenchSlot",
+      "cost": 0,
+      "size": 1,
+      "traits": []
+    },
+    "TFTItem": {
+      "apiName": "TFTItem",
+      "cost": 0,
+      "size": 1,
+      "traits": []
+    },
+    "TFT_ItemUnknown": {
+      "apiName": "TFT_ItemUnknown",
+      "cost": 0,
+      "size": 1,
+      "traits": []
+    },
+    "TFT_BenchSlotLock": {
+      "apiName": "TFT_BenchSlotLock",
+      "cost": 0,
+      "size": 1,
+      "traits": []
+    },
+    "Tome of Traits": {
+      "apiName": "TFT14_EmblemArmoryKey",
+      "cost": 8,
+      "size": 1,
+      "traits": []
+    },
+    "Completed Item Anvil": {
+      "apiName": "TFT_ArmoryKeyCompleted",
+      "cost": 8,
+      "size": 1,
+      "traits": []
+    },
+    "Component Anvil": {
+      "apiName": "TFT_ArmoryKeyComponent",
+      "cost": 8,
+      "size": 1,
+      "traits": []
+    },
+    "Artifact Item Anvil": {
+      "apiName": "TFT_ArmoryKeyOrnn",
+      "cost": 8,
+      "size": 1,
+      "traits": []
+    },
+    "TFT_GoldenEgg": {
+      "apiName": "TFT_GoldenEgg",
+      "cost": 0,
+      "size": 1,
+      "traits": []
+    },
+    "Support item anvil": {
+      "apiName": "TFT_ArmoryKeySupport",
+      "cost": 8,
+      "size": 1,
+      "traits": []
+    },
+    "Mercenary Chest": {
+      "apiName": "TFT6_MercenaryChest",
+      "cost": 11,
+      "size": 1,
+      "traits": []
+    },
+    "TFT13_Augment": {
+      "apiName": "TFT13_Augment",
+      "cost": 0,
+      "size": 1,
+      "traits": []
+    },
+    "Briar": {
+      "apiName": "TFT17_Briar",
+      "cost": 1,
+      "size": 1,
+      "traits": [
+        "Anima",
+        "Primordian",
+        "Rogue"
+      ]
+    },
+    "Bel'Veth": {
+      "apiName": "TFT17_Belveth",
+      "cost": 2,
+      "size": 1,
+      "traits": [
+        "Primordian",
+        "Challenger",
+        "Marauder"
+      ]
+    },
+    "Miss Fortune": {
+      "apiName": "TFT17_MissFortune",
+      "cost": 3,
+      "size": 1,
+      "traits": [
+        "Gun Goddess",
+        "Choose Trait"
+      ]
+    },
+    "Akali": {
+      "apiName": "TFT17_Akali",
+      "cost": 2,
+      "size": 1,
+      "traits": [
+        "N.O.V.A.",
+        "Marauder"
+      ]
+    },
+    "Bard": {
+      "apiName": "TFT17_Bard",
+      "cost": 5,
+      "size": 1,
+      "traits": [
+        "Meeple",
+        "Conduit"
+      ]
+    },
+    "Jinx": {
+      "apiName": "TFT17_Jinx",
+      "cost": 2,
+      "size": 1,
+      "traits": [
+        "Anima",
+        "Challenger"
+      ]
+    },
+    "Illaoi": {
+      "apiName": "TFT17_Illaoi",
+      "cost": 3,
+      "size": 1,
+      "traits": [
+        "Anima",
+        "Vanguard",
+        "Shepherd"
+      ]
+    },
+    "Aurora": {
+      "apiName": "TFT17_Aurora",
+      "cost": 3,
+      "size": 1,
+      "traits": [
+        "Anima",
+        "Voyager"
+      ]
+    },
+    "Fiora": {
+      "apiName": "TFT17_Fiora",
+      "cost": 5,
+      "size": 1,
+      "traits": [
+        "Divine Duelist",
+        "Anima",
+        "Marauder"
+      ]
+    },
+    "Gnar": {
+      "apiName": "TFT17_Gnar",
+      "cost": 2,
+      "size": 1,
+      "traits": [
+        "Meeple",
+        "Sniper"
+      ]
+    },
+    "Fizz": {
+      "apiName": "TFT17_Fizz",
+      "cost": 3,
+      "size": 1,
+      "traits": [
+        "Meeple",
+        "Rogue"
+      ]
+    },
+    "Rammus": {
+      "apiName": "TFT17_Rammus",
+      "cost": 4,
+      "size": 1,
+      "traits": [
+        "Meeple",
+        "Bastion"
+      ]
+    },
+    "Poppy": {
+      "apiName": "TFT17_Poppy",
+      "cost": 1,
+      "size": 1,
+      "traits": [
+        "Meeple",
+        "Bastion"
+      ]
+    },
+    "Corki": {
+      "apiName": "TFT17_Corki",
+      "cost": 4,
+      "size": 1,
+      "traits": [
+        "Meeple",
+        "Fateweaver"
+      ]
+    },
+    "Veigar": {
+      "apiName": "TFT17_Veigar",
+      "cost": 1,
+      "size": 1,
+      "traits": [
+        "Meeple",
+        "Replicator"
+      ]
+    },
+    "Aatrox": {
+      "apiName": "TFT17_Aatrox",
+      "cost": 1,
+      "size": 1,
+      "traits": [
+        "N.O.V.A.",
+        "Bastion"
+      ]
+    },
+    "Caitlyn": {
+      "apiName": "TFT17_Caitlyn",
+      "cost": 1,
+      "size": 1,
+      "traits": [
+        "N.O.V.A.",
+        "Fateweaver"
+      ]
+    },
+    "Maokai": {
+      "apiName": "TFT17_Maokai",
+      "cost": 3,
+      "size": 1,
+      "traits": [
+        "N.O.V.A.",
+        "Brawler"
+      ]
+    },
+    "Kindred": {
+      "apiName": "TFT17_Kindred",
+      "cost": 4,
+      "size": 1,
+      "traits": [
+        "N.O.V.A.",
+        "Challenger"
+      ]
+    },
+    "Kai'Sa": {
+      "apiName": "TFT17_Kaisa",
+      "cost": 3,
+      "size": 1,
+      "traits": [
+        "Dark Star",
+        "Rogue"
+      ]
+    },
+    "Karma": {
+      "apiName": "TFT17_Karma",
+      "cost": 4,
+      "size": 1,
+      "traits": [
+        "Dark Star",
+        "Voyager"
+      ]
+    },
+    "Jhin": {
+      "apiName": "TFT17_Jhin",
+      "cost": 5,
+      "size": 1,
+      "traits": [
+        "Dark Star",
+        "Eradicator",
+        "Sniper"
+      ]
+    },
+    "Urgot": {
+      "apiName": "TFT17_Urgot",
+      "cost": 3,
+      "size": 1,
+      "traits": [
+        "Mecha",
+        "Brawler",
+        "Marauder"
+      ]
+    },
+    "Aurelion Sol": {
+      "apiName": "TFT17_AurelionSol",
+      "cost": 4,
+      "size": 1,
+      "traits": [
+        "Mecha",
+        "Conduit"
+      ]
+    },
+    "The Mighty Mech": {
+      "apiName": "TFT17_Galio",
+      "cost": 4,
+      "size": 1,
+      "traits": [
+        "Mecha",
+        "Voyager"
+      ]
+    },
+    "Viktor": {
+      "apiName": "TFT17_Viktor",
+      "cost": 3,
+      "size": 1,
+      "traits": [
+        "Psionic",
+        "Conduit"
+      ]
+    },
+    "Pyke": {
+      "apiName": "TFT17_Pyke",
+      "cost": 2,
+      "size": 1,
+      "traits": [
+        "Psionic",
+        "Voyager"
+      ]
+    },
+    "Master Yi": {
+      "apiName": "TFT17_MasterYi",
+      "cost": 4,
+      "size": 1,
+      "traits": [
+        "Psionic",
+        "Marauder"
+      ]
+    },
+    "Gragas": {
+      "apiName": "TFT17_Gragas",
+      "cost": 2,
+      "size": 1,
+      "traits": [
+        "Psionic",
+        "Brawler"
+      ]
+    },
+    "Teemo": {
+      "apiName": "TFT17_Teemo",
+      "cost": 1,
+      "size": 1,
+      "traits": [
+        "Space Groove",
+        "Shepherd"
+      ]
+    },
+    "Nasus": {
+      "apiName": "TFT17_Nasus",
+      "cost": 1,
+      "size": 1,
+      "traits": [
+        "Space Groove",
+        "Vanguard"
+      ]
+    },
+    "Gwen": {
+      "apiName": "TFT17_Gwen",
+      "cost": 2,
+      "size": 1,
+      "traits": [
+        "Space Groove",
+        "Rogue"
+      ]
+    },
+    "Samira": {
+      "apiName": "TFT17_Samira",
+      "cost": 3,
+      "size": 1,
+      "traits": [
+        "Space Groove",
+        "Sniper"
+      ]
+    },
+    "Ornn": {
+      "apiName": "TFT17_Ornn",
+      "cost": 3,
+      "size": 1,
+      "traits": [
+        "Space Groove",
+        "Bastion"
+      ]
+    },
+    "Nami": {
+      "apiName": "TFT17_Nami",
+      "cost": 4,
+      "size": 1,
+      "traits": [
+        "Space Groove",
+        "Replicator"
+      ]
+    },
+    "Blitzcrank": {
+      "apiName": "TFT17_Blitzcrank",
+      "cost": 5,
+      "size": 1,
+      "traits": [
+        "Party Animal",
+        "Space Groove",
+        "Vanguard"
+      ]
+    },
+    "Sona": {
+      "apiName": "TFT17_Sona",
+      "cost": 5,
+      "size": 1,
+      "traits": [
+        "Commander",
+        "Psionic",
+        "Shepherd"
+      ]
+    },
+    "Twisted Fate": {
+      "apiName": "TFT17_TwistedFate",
+      "cost": 1,
+      "size": 1,
+      "traits": [
+        "Stargazer",
+        "Fateweaver"
+      ]
+    },
+    "Talon": {
+      "apiName": "TFT17_Talon",
+      "cost": 1,
+      "size": 1,
+      "traits": [
+        "Stargazer",
+        "Rogue"
+      ]
+    },
+    "Jax": {
+      "apiName": "TFT17_Jax",
+      "cost": 2,
+      "size": 1,
+      "traits": [
+        "Stargazer",
+        "Bastion"
+      ]
+    },
+    "Lulu": {
+      "apiName": "TFT17_Lulu",
+      "cost": 3,
+      "size": 1,
+      "traits": [
+        "Stargazer",
+        "Replicator"
+      ]
+    },
+    "Nunu & Willump": {
+      "apiName": "TFT17_Nunu",
+      "cost": 4,
+      "size": 1,
+      "traits": [
+        "Stargazer",
+        "Vanguard"
+      ]
+    },
+    "Vex": {
+      "apiName": "TFT17_Vex",
+      "cost": 5,
+      "size": 1,
+      "traits": [
+        "Doomer"
+      ]
+    },
+    "Riven": {
+      "apiName": "TFT17_Riven",
+      "cost": 4,
+      "size": 1,
+      "traits": [
+        "Timebreaker",
+        "Rogue"
+      ]
+    },
+    "Shen": {
+      "apiName": "TFT17_Shen",
+      "cost": 5,
+      "size": 1,
+      "traits": [
+        "Bulwark",
+        "Bastion"
+      ]
+    },
+    "Milio": {
+      "apiName": "TFT17_Milio",
+      "cost": 2,
+      "size": 1,
+      "traits": [
+        "Timebreaker",
+        "Fateweaver"
+      ]
+    },
+    "Ezreal": {
+      "apiName": "TFT17_Ezreal",
+      "cost": 1,
+      "size": 1,
+      "traits": [
+        "Timebreaker",
+        "Sniper"
+      ]
+    },
+    "Leona": {
+      "apiName": "TFT17_Leona",
+      "cost": 1,
+      "size": 1,
+      "traits": [
+        "Arbiter",
+        "Vanguard"
+      ]
+    },
+    "Zoe": {
+      "apiName": "TFT17_Zoe",
+      "cost": 2,
+      "size": 1,
+      "traits": [
+        "Arbiter",
+        "Conduit"
+      ]
+    },
+    "Diana": {
+      "apiName": "TFT17_Diana",
+      "cost": 3,
+      "size": 1,
+      "traits": [
+        "Arbiter",
+        "Challenger"
+      ]
+    },
+    "LeBlanc": {
+      "apiName": "TFT17_Leblanc",
+      "cost": 4,
+      "size": 1,
+      "traits": [
+        "Arbiter",
+        "Shepherd"
+      ]
+    },
+    "Cho'Gath": {
+      "apiName": "TFT17_Chogath",
+      "cost": 1,
+      "size": 1,
+      "traits": [
+        "Dark Star",
+        "Brawler"
+      ]
+    },
+    "Lissandra": {
+      "apiName": "TFT17_Lissandra",
+      "cost": 1,
+      "size": 1,
+      "traits": [
+        "Dark Star",
+        "Shepherd",
+        "Replicator"
+      ]
+    },
+    "Zed": {
+      "apiName": "TFT17_Zed",
+      "cost": 5,
+      "size": 1,
+      "traits": [
+        "Galaxy Hunter"
+      ]
+    },
+    "Bia & Bayin": {
+      "apiName": "TFT17_Summon",
+      "cost": 11,
+      "size": 1,
+      "traits": []
+    },
+    "TFT17_AnimaSquadProp": {
+      "apiName": "TFT17_AnimaSquadProp",
+      "cost": 0,
+      "size": 1,
+      "traits": []
+    },
+    "Meepsie": {
+      "apiName": "TFT17_IvernMinion",
+      "cost": 2,
+      "size": 1,
+      "traits": [
+        "Meeple",
+        "Shepherd",
+        "Voyager"
+      ]
+    },
+    "TFT17_DRXTracker": {
+      "apiName": "TFT17_DRXTracker",
+      "cost": 0,
+      "size": 1,
+      "traits": []
+    },
+    "TFT17_BardFollower": {
+      "apiName": "TFT17_BardFollower",
+      "cost": 0,
+      "size": 1,
+      "traits": []
+    },
+    "TFT17_Enemy_Fast": {
+      "apiName": "TFT17_Enemy_Fast",
+      "cost": 0,
+      "size": 1,
+      "traits": []
+    },
+    "TFT17_Enemy_Hunter": {
+      "apiName": "TFT17_Enemy_Hunter",
+      "cost": 0,
+      "size": 1,
+      "traits": []
+    },
+    "TFT17_Enemy_Lancer": {
+      "apiName": "TFT17_Enemy_Lancer",
+      "cost": 0,
+      "size": 1,
+      "traits": []
+    },
+    "TFT17_Enemy_BruiserMelee2_Daisy": {
+      "apiName": "TFT17_Enemy_BruiserMelee2_Daisy",
+      "cost": 0,
+      "size": 1,
+      "traits": []
+    },
+    "TFT17_PrimordianTracker": {
+      "apiName": "TFT17_PrimordianTracker",
+      "cost": 0,
+      "size": 1,
+      "traits": []
+    },
+    "TFT7_TempestStrike": {
+      "apiName": "TFT7_TempestStrike",
+      "cost": 0,
+      "size": 1,
+      "traits": []
+    },
+    "TFT17_MissFortune_TraitClone": {
+      "apiName": "TFT17_MissFortune_TraitClone",
+      "cost": 0,
+      "size": 1,
+      "traits": [
+        "Conduit",
+        "Challenger",
+        "Replicator"
+      ]
+    },
+    "Mordekaiser": {
+      "apiName": "TFT17_Mordekaiser",
+      "cost": 2,
+      "size": 1,
+      "traits": [
+        "Dark Star",
+        "Conduit",
+        "Vanguard"
+      ]
+    },
+    "Xayah": {
+      "apiName": "TFT17_Xayah",
+      "cost": 4,
+      "size": 1,
+      "traits": [
+        "Stargazer",
+        "Sniper"
+      ]
+    },
+    "Graves": {
+      "apiName": "TFT17_Graves",
+      "cost": 5,
+      "size": 1,
+      "traits": [
+        "Factory New"
+      ]
+    },
+    "TFT17_God_Thresh": {
+      "apiName": "TFT17_God_Thresh",
+      "cost": 0,
+      "size": 1,
+      "traits": []
+    },
+    "TFT17_God_Soraka": {
+      "apiName": "TFT17_God_Soraka",
+      "cost": 0,
+      "size": 1,
+      "traits": []
+    },
+    "TFT17_God_Ekko": {
+      "apiName": "TFT17_God_Ekko",
+      "cost": 0,
+      "size": 1,
+      "traits": []
+    },
+    "TFT17_God_Varus": {
+      "apiName": "TFT17_God_Varus",
+      "cost": 0,
+      "size": 1,
+      "traits": []
+    },
+    "TFT17_God_Kayle": {
+      "apiName": "TFT17_God_Kayle",
+      "cost": 0,
+      "size": 1,
+      "traits": []
+    },
+    "TFT17_KindredWolf": {
+      "apiName": "TFT17_KindredWolf",
+      "cost": 0,
+      "size": 1,
+      "traits": []
+    },
+    "TFT17_ShenProp": {
+      "apiName": "TFT17_ShenProp",
+      "cost": 0,
+      "size": 1,
+      "traits": []
+    },
+    "Tahm Kench": {
+      "apiName": "TFT17_TahmKench",
+      "cost": 4,
+      "size": 1,
+      "traits": [
+        "Oracle",
+        "Brawler"
+      ]
+    },
+    "Rhaast": {
+      "apiName": "TFT17_Rhaast",
+      "cost": 3,
+      "size": 1,
+      "traits": [
+        "Redeemer"
+      ]
+    },
+    "TimebreakerCore": {
+      "apiName": "TFT17_TimebreakerCore",
+      "cost": 11,
+      "size": 1,
+      "traits": []
+    },
+    "TFT17_God_AurelionSol": {
+      "apiName": "TFT17_God_AurelionSol",
+      "cost": 0,
+      "size": 1,
+      "traits": []
+    },
+    "TFT17_God_Pengu": {
+      "apiName": "TFT17_God_Pengu",
+      "cost": 0,
+      "size": 1,
+      "traits": []
+    },
+    "TFT17_God_Evelynn": {
+      "apiName": "TFT17_God_Evelynn",
+      "cost": 0,
+      "size": 1,
+      "traits": []
+    },
+    "TFT17_God_Yasuo": {
+      "apiName": "TFT17_God_Yasuo",
+      "cost": 0,
+      "size": 1,
+      "traits": []
+    },
+    "TFT17_God_Ahri": {
+      "apiName": "TFT17_God_Ahri",
+      "cost": 0,
+      "size": 1,
+      "traits": []
+    },
+    "TFT17_IllaoiMinion": {
+      "apiName": "TFT17_IllaoiMinion",
+      "cost": 0,
+      "size": 1,
+      "traits": []
+    },
+    "TFT13_Goop": {
+      "apiName": "TFT13_Goop",
+      "cost": 0,
+      "size": 1,
+      "traits": []
+    },
+    "Rek'Sai": {
+      "apiName": "TFT17_RekSai",
+      "cost": 1,
+      "size": 1,
+      "traits": [
+        "Primordian",
+        "Brawler"
+      ]
+    },
+    "Pantheon": {
+      "apiName": "TFT17_Pantheon",
+      "cost": 2,
+      "size": 1,
+      "traits": [
+        "Timebreaker",
+        "Brawler",
+        "Replicator"
+      ]
+    },
+    "Morgana": {
+      "apiName": "TFT17_Morgana",
+      "cost": 4,
+      "size": 1,
+      "traits": [
+        "Dark Lady"
+      ]
+    },
+    "TFT17_ThreshLantern": {
+      "apiName": "TFT17_ThreshLantern",
+      "cost": 0,
+      "size": 1,
+      "traits": []
+    },
+    "Cosmic Squid": {
+      "apiName": "TFT17_PVE_Minion",
+      "cost": 2,
+      "size": 1,
+      "traits": []
+    },
+    "Cosmic Scrapper": {
+      "apiName": "TFT17_PVE_Raptor",
+      "cost": 2,
+      "size": 1,
+      "traits": []
+    },
+    "Cosmic Bruiser": {
+      "apiName": "TFT17_PVE_Krug",
+      "cost": 2,
+      "size": 1,
+      "traits": []
+    },
+    "TFT17_BaubleShrine": {
+      "apiName": "TFT17_BaubleShrine",
+      "cost": 0,
+      "size": 1,
+      "traits": []
+    },
+    "Cosmic Flutterbye": {
+      "apiName": "TFT17_PVE_Pix",
+      "cost": 2,
+      "size": 1,
+      "traits": []
+    },
+    "Cosmic Gromp": {
+      "apiName": "TFT17_PVE_Gromp",
+      "cost": 2,
+      "size": 1,
+      "traits": []
+    },
+    "Cosmic Elder Dragon": {
+      "apiName": "TFT17_PVE_ElderDragon",
+      "cost": 11,
+      "size": 1,
+      "traits": []
+    },
+    "TFT17_DarkStarDamageTracker": {
+      "apiName": "TFT17_DarkStarDamageTracker",
+      "cost": 0,
+      "size": 1,
+      "traits": []
+    },
+    "Mini Black Hole": {
+      "apiName": "TFT17_DarkStar_FakeUnit",
+      "cost": 1,
+      "size": 1,
+      "traits": []
+    },
+    "Apex Primordian": {
+      "apiName": "TFT17_Enemy_Aatrox",
+      "cost": 5,
+      "size": 1,
+      "traits": []
+    }
+  },
+  "items": [
+    "Trade Sector",
+    "2-cost: Pyke",
+    "Champion Duplicator and 10 Gold",
+    "Broken Prototype",
+    "Reforger (9 uses left!)",
+    "Zz'Rot Portal",
+    "3-Cost Shop",
+    "1-star Jinx",
+    "Mending Echoes",
+    "Choke",
+    "Eternal Pact",
+    "Omniweapon",
+    "Mystery Loot",
+    "Precise Smithing",
+    "Hextech Gunblade",
+    "Divine Refund",
+    "3 3-cost champions",
+    "MissingNo",
+    "Protector's Vow",
+    "Radiant Bramble Vest",
+    "5-cost: Vex",
+    "1 gold",
+    "Divine Investment",
+    "Cosmic Hex",
+    "3-cost: Lulu",
+    "2-cost: Gwen",
+    "Owned 4 cost",
+    "Iceblast Armor",
+    "16 XP",
+    "Blue Loot Orb and 2 Gold",
+    "Reforger and 5 Gold",
+    "Gold Collector",
+    "Shared Wealth +",
+    "2-cost: Jinx",
+    "Tiny Champion Duplicator",
+    "Chalice of Power",
+    "Cashflow",
+    "Hullcrusher",
+    "Heartseeker++",
+    "Trait Quest",
+    "Fission",
+    "AP Rounds",
+    "Crown of Demacia",
+    "Death's Defiance",
+    "TFT17_MarketOffering_EmpoweredHex_SunHex",
+    "1-cost: Teemo",
+    "Space Groove Emblem",
+    "Evelynn's Instinct",
+    "Magnetic Remover (2 uses left!)",
+    "Steadfast Heart",
+    "1-star Illaoi",
+    "7 5-cost champions",
+    "Golden Item Remover",
+    "Thief's Gloves",
+    "Ephemeral Rerolls",
+    "Command Mod: Exhaust",
+    "Arbiter Emblem",
+    "Nashor's Tooth",
+    "4-cost: Nunu",
+    "Buckshot++",
+    "Treasure Armory",
+    "Radiant Protector's Vow",
+    "Eternal Winter",
+    "4-cost champion",
+    "Spear of Shojin",
+    "free rerolls",
+    "5 4-cost champions",
+    "2-star 2-cost champion",
+    "Assault Frame",
+    "Deathfire Grasp",
+    "Talisman Of Ascension",
+    "Marauder Emblem",
+    "Aegis of Dawn",
+    "Trickster's Glass",
+    "Zephyr",
+    "Craftsmanship",
+    "4-cost: Morgana",
+    "Command Mod: Transmute",
+    "Fragmentation Rounds",
+    "Blue Buff",
+    "34 gold",
+    "16 gold",
+    "4-cost: Tahm Kench",
+    "Champion Duplicator",
+    "12 Tactician Health",
+    "Blessing: Prosperity",
+    "Nanomachines",
+    "Accomplice's Gloves",
+    "3 Radiant Items",
+    "Sparring Gloves",
+    "Gold Augment",
+    "Precision Scope++",
+    "Rev-Up+",
+    "Quicksilver",
+    "8 gold",
+    "Dummy with Shroud",
+    "Unstable Treasure Chest",
+    "2 Radiant Items",
+    "Radiant Jeweled Gauntlet",
+    "Chain Vest",
+    "Battle Bunny Crossbow",
+    "5-cost: Shen",
+    "Aim-Assistant",
+    "Reinforced Frame",
+    "4 2-cost champions",
+    "1-cost: Ezreal",
+    "4-cost: Aurelion Sol",
+    "Radiant Deathblade",
+    "Mogul's Mail",
+    "Command Mod: Fabricate",
+    "3 gold",
+    "Challenger Emblem",
+    "Completed Item Anvil",
+    "Manazane",
+    "Combat Hack",
+    "Void Coefficient",
+    "30 gold",
+    "Morellonomicon",
+    "All double component items",
+    "Triple Tap",
+    "Gold Loot Orb",
+    "Blacksmith's Gloves",
+    "Two 3-star 2-cost Champions",
+    "2-star 1-cost: Nasus",
+    "Crownguard",
+    "Magnetic Remover (8 uses left!)",
+    "2 2-star 2-cost champions",
+    "2-star 5-cost champion",
+    "2-cost: Pantheon",
+    "Bastion Emblem",
+    "1-cost: Cho'Gath",
+    "2-star 1-cost: Ezreal",
+    "4-cost: Riven",
+    "4 gold",
+    "Gwen's Scissors (3 uses left!)",
+    "Ace",
+    "Corrupt Vampiric Scepter",
+    "Bunny Prime Ballista",
+    "5-cost: Blitzcrank",
+    "Divine Intervention",
+    "LaserBallistics++",
+    "Radiant Sunfire Cape",
+    "4-Cost Shop",
+    "Striker's Flail",
+    "Locket of the Iron Solari",
+    "Blighting Jewel",
+    "1-cost: Leona",
+    "4-cost: Master Yi",
+    "Warmog's Armor",
+    "2 1-cost champions",
+    "Radiant Dragon's Claw",
+    "Anima Emblem",
+    "Fragmentation Rounds+",
+    "14 XP",
+    "Bramble Vest",
+    "Random Component",
+    "Starlight Hex",
+    "Lesser Mirrored Persona",
+    "4-cost: Karma",
+    "2-cost: Bel'Veth",
+    "Magnetic Remover",
+    "Blast Radius+",
+    "Salvager",
+    "Tankbuster",
+    "2-star 1-cost: Poppy",
+    "3-star Aurora",
+    "Magnetic Remover (9 uses left!)",
+    "2 star Zac, Aurora, Urgot, and Samira",
+    "Titanic Hydra",
+    "Sympathetic Detonation",
+    "N.O.V.A. Emblem",
+    "Sniper's Focus",
+    "Varus's Obsession",
+    "2-cost: Gnar",
+    "2-star 1-cost: Teemo",
+    "5-cost: Jhin",
+    "5-cost: Sona",
+    "Lovers +",
+    "3-cost: Kai'Sa",
+    "3-cost: Miss Fortune",
+    "2-cost: Mordekaiser",
+    "Portable Pain",
+    "Level Quest",
+    "Sparking Prototype",
+    "Lucky Item Chest",
+    "Radiant Spirit Visage",
+    "Lioness's Lament",
+    "Hellfire Hatchet",
+    "Buckshot+",
+    "Shimmerscale Essence",
+    "4-cost: Kindred",
+    "Banshee's Veil",
+    "Recurve Bow",
+    "Gargoyle Stoneplate",
+    "Low Health Quest",
+    "6 Lesser Champion Duplicators",
+    "Reroll Quest",
+    "2-star 3-cost",
+    "Challenger Mode",
+    "Solar Hex",
+    "Laser Ballistics+",
+    "Giant's Belt",
+    "2 Champion Duplicators",
+    "55 gold",
+    "Tactician's Crown",
+    "4-cost: Nami",
+    "2 Salvagers",
+    "Striker Selector",
+    "The Tears of My Enemies",
+    "2 Reforgers",
+    "Shockwave",
+    "Leeching Implants",
+    "Divine Empathy",
+    "20 free rerolls",
+    "Component Anvil",
+    "Blessing: Speed",
+    "Power Frame",
+    "5-cost shop",
+    "Ahri's Aura",
+    "Blue Loot Orb",
+    "Yasuo's Bladework",
+    "Guinsoo's Rageblade",
+    "2 4-cost champions",
+    "3 4-cost champions",
+    "Red Buff",
+    "Radiant Striker's Flail",
+    "Radiant Rabadon's Deathcap",
+    "1-cost: Poppy",
+    "Needlessly Large Rod",
+    "Support Frame",
+    "2 3-cost champions",
+    "3-star Illaoi",
+    "B.F. Sword",
+    "3-star Briar",
+    "1-cost: Rek'Sai",
+    "Tactician's Shield",
+    "Leeching Implants+",
+    "Pandora's Seat",
+    "2 5-costs",
+    "4-cost: LeBlanc",
+    "4-cost: Xayah",
+    "Cyclonic Slicers",
+    "Rune of Allegiance",
+    "Reforger (3 uses left!)",
+    "3-cost: Rhaast",
+    "1-star Aurora",
+    "Blast Radius++",
+    "Seeker's Armguard",
+    "Mecha-Former",
+    "11 Rerolls",
+    "3-cost champion",
+    "Radiant Steadfast Heart",
+    "Reforger (7 uses left!)",
+    "2-star Fiora",
+    "Hard Pivot",
+    "Blessing: Prosperity +",
+    "Wit's End",
+    "Animapocalypse",
+    "Spatula and 5 Gold",
+    "3 2-cost champions",
+    "3-cost: Diana",
+    "Blood Pact ++",
+    "Gambler's Blade",
+    "OwO Blaster",
+    "9 gold",
+    "4-cost: Rammus",
+    "Boon of Omnipotence",
+    "Heavy Plating",
+    "Radiant Kraken's Fury",
+    "1-cost: Talon",
+    "2 5-cost champions.",
+    "Titan's Resolve",
+    "2 gold",
+    "Target-Lock Optics",
+    "Tear of the Goddess",
+    "5 gold",
+    "4-cost Champion and 4 Gold",
+    "Echoing Batblades",
+    "3 5-cost champions",
+    "Sunfire Cape",
+    "Do You Know Who I Am?",
+    "8 Rerolls",
+    "Zeke's Herald",
+    "5-cost champion",
+    "2-star 4-cost",
+    "25 gold",
+    "Radiant Hextech Gunblade",
+    "Masterwork Upgrade",
+    "Radiant Last Whisper",
+    "Command Mod: Doublestrike",
+    "2-star 1-cost: Briar",
+    "Command Mod: Disguise",
+    "Support Anvil",
+    "Gwen's Scissors",
+    "3-star Fiora",
+    "Unusable Slot",
+    "Duplicator Bundle",
+    "The Indomitable",
+    "Grav Booster+",
+    "Scuttle Party",
+    "Fission+",
+    "Steamroll",
+    "Thresh's Lantern",
+    "Heartseeker",
+    "3-cost: Urgot",
+    "Determined Investor",
+    "Command Mod: Hack",
+    "2-cost: Meepsie",
+    "Cryogenic Hex",
+    "Radiant Void Staff",
+    "Giant Slayer",
+    "Primordian Emblem",
+    "2-star 1-cost: Caitlyn",
+    "Unceasing Cyclone",
+    "Shroud of Stillness",
+    "2-cost: Zoe",
+    "1-cost: Caitlyn",
+    "Spirit Visage",
+    "6 gold",
+    "Knight's Vow",
+    "Pengu's Protection",
+    "2-cost: Jax",
+    "3-star 5-cost champion",
+    "3% Increased 5-Cost Odds",
+    "Grav Booster",
+    "Starter Kit",
+    "Silvermere Dawn",
+    "Radiant Adaptive Helm",
+    "2-star 1-cost: Veigar",
+    "Precision Scope",
+    "Blessing: Size",
+    "Anomaly",
+    "Biomatter Preserver",
+    "3-star 1-cost",
+    "Starry Quest",
+    "Ionic Spark",
+    "Solar Eclipse",
+    "Deep Freeze",
+    "Radiant Warmog's Armor",
+    "16 free rerolls",
+    "Fishbones",
+    "Reforger (10 uses left!)",
+    "Lovers ++",
+    "12 radiant items",
+    "Archangel's Staff",
+    "1-cost: Aatrox",
+    "Rogue Emblem",
+    "Rev-Up",
+    "9 components",
+    "Obsidian Cleaver",
+    "Wealth Quest",
+    "2 Lesser Champion Duplicators",
+    "Radiant Red Buff",
+    "Radiant Field",
+    "Lesser Champion Duplicator",
+    "Prismatic Augment",
+    "Chest of Greed",
+    "Gwen's Scissors (2 uses left!)",
+    "Command Mod: Optimize",
+    "1-cost: Twisted Fate",
+    "Meeple Emblem",
+    "Taunt",
+    "tft15_General_itemname_BenchedUnitInCombat",
+    "Training Dummy",
+    "3-star Jinx",
+    "Statikk Shiv",
+    "Virtue of the Martyr",
+    "Dark Star Emblem",
+    "Random Boon",
+    "3-cost: Fizz",
+    "Hunger For Power Anomaly",
+    "2-cost champion",
+    "Armored Dummy",
+    "XP.",
+    "3-cost: Aurora",
+    "Searing Shortbow",
+    "15 gold",
+    "Augment Rerolls",
+    "Double Tap",
+    "Rocket Swarm",
+    "Forbidden Idol",
+    "2-cost: Gragas",
+    "Dawncore",
+    "1-star Briar",
+    "Emergency Shielding",
+    "18 gold",
+    "2-star 1-cost: Twisted Fate",
+    "2-star 1-cost: Rek'Sai",
+    "Sacrifice",
+    "Replicator Mode",
+    "2-star 3-cost champion",
+    "Radiant Bloodthirster",
+    "Dummy with 2 Zeke's",
+    "2 Tacticians' Capes",
+    "3 Masterwork Upgrades",
+    "Frying Pan",
+    "Reforger (2 uses left!)",
+    "6 5-cost champions",
+    "Command Mod: Analyze",
+    "Precision Scope+",
+    "Radiant Ionic Spark",
+    "Better Together +",
+    "Soraka's Miracle",
+    "Moonstone Renewer",
+    "Jeweled Gauntlet",
+    "2-cost: Milio",
+    "Critical Hit!",
+    "Spatula and Component Anvil",
+    "Fission++",
+    "Tome of Traits",
+    "2 Components",
+    "Lich Bane",
+    "Radiant Lucky Item Chest",
+    "3 Lesser Champion Duplicators",
+    "1% Increased 5-Cost Odds",
+    "Blessing: Wealth",
+    "2-star 1-cost: Cho'Gath",
+    "Mirrored Persona",
+    "Rainbow Shops",
+    "2-cost: Akali",
+    "2-star 1-cost: Leona",
+    "Radiant Archangel's Staff",
+    "Guiding Hex",
+    "Tome of Traits and Reforger",
+    "Golden Hex",
+    "Diamond Hands",
+    "Super Parting Gift",
+    "Semiconductor",
+    "Reforger (4 uses left!)",
+    "Hand Of Justice",
+    "2 Item Removers",
+    "Speed Increase",
+    "Rapid Firecannon",
+    "Blood Pact +",
+    "Hammer to the Face",
+    "2-star 2-cost",
+    "1-star Fiora",
+    "Cappa Juice",
+    "Coolant+",
+    "Leaky Prototype",
+    "Artifact Item",
+    "Suspicious Trench Coat",
+    "1-star 5-cost champion",
+    "Drone Uplink",
+    "Voyager Emblem",
+    "Buckshot",
+    "3-cost: Samira",
+    "1-cost: Veigar",
+    "Radiant Hand of Justice",
+    "3-cost: Ornn",
+    "Magnetic Remover (6 uses left!)",
+    "36 XP.",
+    "Storm Hex",
+    "Malware Matrix",
+    "Negatron Cloak",
+    "God Artifact Anvil",
+    "Magnetic Remover (4 uses left!)",
+    "Sympathetic Implant",
+    "Gold",
+    "Magnetic Remover (7 uses left!)",
+    "Finalist Gambit",
+    "3 Spatulas",
+    "3-star 1-cost champion and 7 gold",
+    "Soraka's Embrace",
+    "Tune-Up",
+    "Shepherd Emblem",
+    "Sniper Emblem",
+    "Kayle's Exaltation",
+    "Luden's Tempest",
+    "3-cost: Maokai",
+    "Radiant Evenshroud",
+    "Radiant Edge of Night",
+    "Aegis of the Legion",
+    "Gold Every Turn",
+    "Sentinel Swarm",
+    "Radiant Nashor's Tooth",
+    "2 Deathblades",
+    "Starcrossed Upgrade",
+    "Edge of Night",
+    "Better Together",
+    "Bloodthirster",
+    "Vayne's Chromablades",
+    "Latent Explosion",
+    "Radiant Sterak's Gage",
+    "Acceleration Hex",
+    "5-cost: Bard",
+    "Mini Recombobulate",
+    "Ripper Bullets",
+    "Aegis of Dusk",
+    "2 Completed Items and Reforger",
+    "Spectral Cutlass",
+    "Reforger",
+    "5 1-cost champions",
+    "5-cost: Graves",
+    "3-cost: Illaoi",
+    "Unending Despair",
+    "Sheer Mass",
+    "2 Tiny Duplicators",
+    "Tentacle Slam",
+    "Reforger (6 uses left!)",
+    "Meltthrough",
+    "Random Emblem",
+    "Kayle's Radiant Exaltation",
+    "10 gold",
+    "Ripper Bullets+",
+    "Stargazer Emblem",
+    "1-cost: Nasus",
+    "Zhonya's Paradox",
+    "Savage Slicer",
+    "Rabadon's Deathcap",
+    "Radiant Infinity Edge",
+    "Two 3-star 1-cost Champions",
+    "7 Gold",
+    "Sterak's Gage",
+    "Reactive Armor",
+    "2-star 1-cost: Aatrox",
+    "4-cost: Corki",
+    "Artifact Anvil",
+    "Evenshroud",
+    "Flickerblades",
+    "Psionic Emblem",
+    "Radiant Quicksilver",
+    "Radiant Thief's Gloves",
+    "Shadow Puppet",
+    "12 gold",
+    "Damage Amp",
+    "Leonine Lamentation",
+    "Magnetic Remover (3 uses left!)",
+    "Radiant Titan's Resolve",
+    "Roll the Bones",
+    "Radiant Item",
+    "5-cost: Fiora",
+    "1 Training Dummy",
+    "3-cost: Viktor",
+    "Coolant",
+    "4 4-cost champions",
+    "5-cost champion and 10 Gold",
+    "Zeke's Bleak Herald",
+    "Radiant Guinsoo's Rageblade",
+    "Needlessly Big Gem",
+    "Loaded Dice",
+    "4-cost",
+    "2-star Briar",
+    "Infinity Force",
+    "4 components",
+    "Last Whisper",
+    "Infinity Edge",
+    "The Annihilator",
+    "Evolved Embershot",
+    "Radiant Giant Slayer",
+    "AP Rounds+",
+    "Heartseeker+",
+    "Humility",
+    "Reforger (5 uses left!)",
+    "2-star Illaoi",
+    "Anvil Transformation",
+    "Emergency Shielding+",
+    "Gray Loot Orb",
+    "Magnetic Remover (5 uses left!)",
+    "1-cost: Briar",
+    "1-cost: Lissandra",
+    "Void Gauntlet",
+    "Steamroll+",
+    "Remover and 5 Gold",
+    "Innervating Locket",
+    "gold",
+    "20 gold",
+    "Radiant Blue Buff",
+    "Radiant Spear of Shojin",
+    "2-star 1-cost Talon",
+    "Adaptive Helm",
+    "Dummy with 2 Lockets",
+    "Marksman Frame",
+    "Command Mod: Brace",
+    "Lightshield Crest",
+    "Silver Augment",
+    "Prowler's Claw",
+    "2-star Jinx",
+    "Duplicator Deal",
+    "Void Staff",
+    "The Lovers",
+    "Laser Ballistics",
+    "Dragon's Claw",
+    "Frontline Dummy",
+    "Blast Radius",
+    "Conduit Mode",
+    "Brawler Emblem",
+    "Kraken's Fury",
+    "The Eternal Flame",
+    "Deathblade",
+    "Spatula",
+    "Radiant Morellonomicon",
+    "Radiant Crownguard",
+    "4-cost: The Mighty Mech",
+    "4 5-cost champions",
+    "Lesser Rune of Allegiance",
+    "UwU Blaster",
+    "Starcrossed Upgrade ++",
+    "Completed Item",
+    "Vanguard Emblem",
+    "Blood Pact",
+    "5-cost: Zed",
+    "Level Up!",
+    "Shared Wealth",
+    "Timebreaker Emblem",
+    "Reforger (8 uses left!)",
+    "Ekko's Patience",
+    "Augment Wheel",
+    "1-star 4-cost champion",
+    "2-star 4-cost champion",
+    "Randuin's Omen",
+    "Owned 3 cost",
+    "Golem with 2 Aegises.",
+    "Gwen's Scissors (5 uses left!)",
+    "Tactician's Cape",
+    "Increased Interest",
+    "Pocket Recombobulator<br><br>",
+    "Gwen's Scissors (4 uses left!)",
+    "40 gold",
+    "Radiant Gargoyle Stoneplate",
+    "Command Mod: Disrupt",
+    "2-star Aurora",
+    "Magnetic Remover (10 uses left!)",
+    "2-star 1-cost: Lissandra",
+    "tft_item_name_FracturedMirrorEmptySlot",
+    "Mittens"
+  ],
+  "combinable_items": {
+    "Rabadon's Deathcap": [
+      "Needlessly Large Rod",
+      "Needlessly Large Rod"
+    ],
+    "Infinity Edge": [
+      "B.F. Sword",
+      "Sparring Gloves"
+    ],
+    "Protector's Vow": [
+      "Tear of the Goddess",
+      "Chain Vest"
+    ],
+    "Spirit Visage": [
+      "Tear of the Goddess",
+      "Giant's Belt"
+    ],
+    "Tactician's Cape": [
+      "Spatula",
+      "Frying Pan"
+    ],
+    "Thief's Gloves": [
+      "Sparring Gloves",
+      "Sparring Gloves"
+    ],
+    "Guinsoo's Rageblade": [
+      "Recurve Bow",
+      "Needlessly Large Rod"
+    ],
+    "Ionic Spark": [
+      "Needlessly Large Rod",
+      "Negatron Cloak"
+    ],
+    "Sterak's Gage": [
+      "B.F. Sword",
+      "Giant's Belt"
+    ],
+    "Dragon's Claw": [
+      "Negatron Cloak",
+      "Negatron Cloak"
+    ],
+    "Striker's Flail": [
+      "Giant's Belt",
+      "Sparring Gloves"
+    ],
+    "Arbiter Emblem": [
+      "Spatula",
+      "Negatron Cloak"
+    ],
+    "Vanguard Emblem": [
+      "Frying Pan",
+      "Negatron Cloak"
+    ],
+    "Timebreaker Emblem": [
+      "Spatula",
+      "Recurve Bow"
+    ],
+    "N.O.V.A. Emblem": [
+      "Spatula",
+      "Sparring Gloves"
+    ],
+    "Meeple Emblem": [
+      "Spatula",
+      "Chain Vest"
+    ],
+    "Shepherd Emblem": [
+      "Frying Pan",
+      "Tear of the Goddess"
+    ],
+    "Brawler Emblem": [
+      "Frying Pan",
+      "Giant's Belt"
+    ],
+    "Rogue Emblem": [
+      "Frying Pan",
+      "Sparring Gloves"
+    ],
+    "Challenger Emblem": [
+      "Frying Pan",
+      "Recurve Bow"
+    ],
+    "Dark Star Emblem": [
+      "Spatula",
+      "B.F. Sword"
+    ],
+    "Stargazer Emblem": [
+      "Spatula",
+      "Needlessly Large Rod"
+    ],
+    "Marauder Emblem": [
+      "Frying Pan",
+      "B.F. Sword"
+    ],
+    "Space Groove Emblem": [
+      "Spatula",
+      "Tear of the Goddess"
+    ],
+    "Bastion Emblem": [
+      "Frying Pan",
+      "Chain Vest"
+    ],
+    "Voyager Emblem": [
+      "Frying Pan",
+      "Needlessly Large Rod"
+    ],
+    "Primordian Emblem": [
+      "Spatula",
+      "Giant's Belt"
+    ],
+    "Gargoyle Stoneplate": [
+      "Chain Vest",
+      "Negatron Cloak"
+    ],
+    "Bramble Vest": [
+      "Chain Vest",
+      "Chain Vest"
+    ],
+    "Giant Slayer": [
+      "B.F. Sword",
+      "Recurve Bow"
+    ],
+    "Sunfire Cape": [
+      "Chain Vest",
+      "Giant's Belt"
+    ],
+    "Hand Of Justice": [
+      "Tear of the Goddess",
+      "Sparring Gloves"
+    ],
+    "Edge of Night": [
+      "B.F. Sword",
+      "Chain Vest"
+    ],
+    "Titan's Resolve": [
+      "Chain Vest",
+      "Recurve Bow"
+    ],
+    "Kraken's Fury": [
+      "Negatron Cloak",
+      "Recurve Bow"
+    ],
+    "Bloodthirster": [
+      "B.F. Sword",
+      "Negatron Cloak"
+    ],
+    "Archangel's Staff": [
+      "Needlessly Large Rod",
+      "Tear of the Goddess"
+    ],
+    "Spear of Shojin": [
+      "B.F. Sword",
+      "Tear of the Goddess"
+    ],
+    "Evenshroud": [
+      "Negatron Cloak",
+      "Giant's Belt"
+    ],
+    "Nashor's Tooth": [
+      "Recurve Bow",
+      "Giant's Belt"
+    ],
+    "Morellonomicon": [
+      "Needlessly Large Rod",
+      "Giant's Belt"
+    ],
+    "Red Buff": [
+      "Recurve Bow",
+      "Recurve Bow"
+    ],
+    "Crownguard": [
+      "Needlessly Large Rod",
+      "Chain Vest"
+    ],
+    "Adaptive Helm": [
+      "Negatron Cloak",
+      "Tear of the Goddess"
+    ],
+    "Blue Buff": [
+      "Tear of the Goddess",
+      "Tear of the Goddess"
+    ],
+    "Last Whisper": [
+      "Recurve Bow",
+      "Sparring Gloves"
+    ],
+    "Jeweled Gauntlet": [
+      "Needlessly Large Rod",
+      "Sparring Gloves"
+    ],
+    "Steadfast Heart": [
+      "Chain Vest",
+      "Sparring Gloves"
+    ],
+    "Tactician's Crown": [
+      "Spatula",
+      "Spatula"
+    ],
+    "Quicksilver": [
+      "Sparring Gloves",
+      "Negatron Cloak"
+    ],
+    "Deathblade": [
+      "B.F. Sword",
+      "B.F. Sword"
+    ],
+    "Tactician's Shield": [
+      "Frying Pan",
+      "Frying Pan"
+    ],
+    "Warmog's Armor": [
+      "Giant's Belt",
+      "Giant's Belt"
+    ],
+    "Void Staff": [
+      "Recurve Bow",
+      "Tear of the Goddess"
+    ],
+    "Hextech Gunblade": [
+      "B.F. Sword",
+      "Needlessly Large Rod"
+    ]
+  },
+  "augments": [
+    "Ekko's Boon",
+    "Soraka's Boon",
+    "Anima Commander",
+    "Shieldmaiden",
+    "Concentration",
+    "Aurelion Sol's Boon",
+    "Your team gains 15 Attack Damage and Ability Power.",
+    "Heat Death",
+    "Invader Zed",
+    "Ahri's Boon",
+    "Timestream",
+    "Boon of Resurrection",
+    "Divine Amendment",
+    "Stellar Combo",
+    "Yasuo's Share The Spotlight",
+    "Termeepnal Velocity",
+    "The Big Bang",
+    "Contract Killer",
+    "Yasuo's Golden Hex",
+    "Thresh's Boon",
+    "Reach for the Stars",
+    "Sniper's Nest",
+    "Apotheotic Forge",
+    "Shepherd's Song",
+    "TFT17_Augment_Psionic_EmergencySupplies_Name",
+    "Evelynn's Boon",
+    "Tour of the Galaxy",
+    "Meep King",
+    "Bonk!",
+    "Kayle's Boon",
+    "Yasuo's Boon",
+    "Boon of the Scrapper",
+    "Self Destruct",
+    "Neutron Star",
+    "Divine Paladins",
+    "Varus's Boon",
+    "Blood Price",
+    "Lift Off",
+    "Loot Singularity",
+    "Heart of the Swarm",
+    "U.R.F",
+    "Call to Chaos",
+    "At What Cost",
+    "The Golden Egg",
+    "Retribution",
+    "Min-Max",
+    "Arcane Viktor-y",
+    "Epic Rolldown",
+    "Firesale",
+    "Spreading Roots",
+    "Tiny Titans",
+    "Survivor",
+    "Small Grab Bag",
+    "Warlord's Honor",
+    "Team Building",
+    "Tactician's Kitchen",
+    "Hustler",
+    "Band of Thieves II+",
+    "Giant and Mighty",
+    "Cybernetic Implants",
+    "Replication",
+    "Crash Test Dummies",
+    "Lucky Gloves+",
+    "Dummify",
+    "Patience is a Virtue",
+    "Deadlier Caps",
+    "Tiny, but Deadly",
+    "Augmented Power",
+    "Urf's Grab Bag",
+    "Baron's Lair",
+    "Missed Connections",
+    "Win Out",
+    "Bronze For Life II",
+    "Frontline Foundation",
+    "Trifecta I",
+    "Early Learnings",
+    "Wise Spending",
+    "Backline Blueprint",
+    "New Recruit+",
+    "Trifecta II",
+    "Cognitive Tax",
+    "You Have My Bow",
+    "One Buff, Two Buff",
+    "Glass Cannon I",
+    "Makeshift Armor I",
+    "Cognitive Tax+",
+    "Makeshift Armor II",
+    "Upward Mobility",
+    "Explosive Growth+",
+    "Explosive Growth",
+    "Best Friends II",
+    "Cluttered Mind",
+    "Best Friends I",
+    "Heavy Is the Crown",
+    "Hard Commit",
+    "Seraphim's Staff",
+    "Group Hug II",
+    "Buried Treasures",
+    "Group Hug I",
+    "Woven Magic",
+    "Expedition",
+    "Healing Orbs I",
+    "The Trait Tree+",
+    "Climb The Ladder II",
+    "Climb The Ladder I",
+    "Lucky Gloves",
+    "Teaming Up",
+    "Gilded Steel",
+    "Electrocharge II",
+    "Lunch Money",
+    "Electrocharge I",
+    "Worth the Wait",
+    "Branching Out+",
+    "Item Grab Bag",
+    "Going Long",
+    "Staffsmith",
+    "Expected Unexpectedness",
+    "Hold the Line",
+    "Sunfire Board",
+    "Iron Assets",
+    "Feed the Flames",
+    "Hedge Fund+",
+    "Golden Gamble",
+    "AFK",
+    "Hedge Fund",
+    "Two Much Value",
+    "Heroic Grab Bag+",
+    "Backup Bows",
+    "Plot Armor",
+    "Heart of Steel",
+    "Charge Transfer I",
+    "Heroic Grab Bag++",
+    "Salvage Bin",
+    "Charge Transfer II",
+    "Patient Study",
+    "Urf's Gambit",
+    "Slammin'",
+    "Bronze For Life I",
+    "Cosmic Restart",
+    "High Voltage",
+    "Solo Leveling",
+    "Exiles I",
+    "Treasure Hunt",
+    "Slightly Magic Roll",
+    "Find Your Center",
+    "Good For Something I",
+    "Salvage Bin+",
+    "Spirit of Redemption",
+    "Speedy Double Kill",
+    "Forward Thinking",
+    "Vampiric Vitality I",
+    "Flexible",
+    "Restart Mission",
+    "Duo Queue",
+    "Slammin'+",
+    "Level Up!",
+    "Second Wind II",
+    "Twin Guardians",
+    "Second Wind",
+    "Golden Gamble+",
+    "An Exalted Adventure",
+    "Stand United",
+    "Feeling Lucky",
+    "Advanced Loan",
+    "The Golden Dragon",
+    "Continuous Conjuration",
+    "One, Two, Five!",
+    "Silver Spoon",
+    "Infinity Protection",
+    "Forge a Friend",
+    "Care Package",
+    "Swordsmith",
+    "Epoch+",
+    "Kahunahuna",
+    "Component Heist",
+    "Aura Farming",
+    "Belt Overflow",
+    "Forged in Strength",
+    "One Two Three",
+    "The Trait Tree",
+    "Savings Account",
+    "Crafted Crafting",
+    "Jeweled Lotus I",
+    "Birthday Reunion",
+    "Cursed Crown",
+    "Exclusive Customization II",
+    "Prizefighter",
+    "Heroic Grab Bag",
+    "Exclusive Customization",
+    "Invested++",
+    "Wand Overflow",
+    "Radiant Rascal",
+    "Spreading Roots+",
+    "Ascension",
+    "Lineup",
+    "Pandora's Items II",
+    "Luxury Subscription",
+    "Booster Pack",
+    "Golden Gamble++",
+    "Glass Cannon II",
+    "Recombobulator",
+    "Little Buddies",
+    "Thorn-Plated Armor",
+    "Advanced Loan+",
+    "Commerce Core",
+    "Focused Fire",
+    "Side Effects",
+    "Invested+",
+    "Bodyguard Training",
+    "Cry Me A River",
+    "A Magic Roll",
+    "Sword Overflow",
+    "The Tower",
+    "We Stick Together",
+    "Clear Mind",
+    "Worth the Wait II",
+    "Misfits",
+    "Rolling For Days I",
+    "Clockwork Accelerator",
+    "Band of Thieves II",
+    "Build a Bud",
+    "Two Tanky",
+    "Corrosion",
+    "Boxing Lessons",
+    "Late Game Specialist",
+    "Birthday Present",
+    "Indiscriminate Killer",
+    "Shimmerscale Essence",
+    "Flowing Tears",
+    "Branching Out",
+    "Solo Plate",
+    "Sweet Treats",
+    "Subscription Service",
+    "Exiles II",
+    "Band of Thieves II++",
+    "ReinFOURcement",
+    "NO SCOUT NO PIVOT",
+    "Late Game Scaling",
+    "Money Hungry",
+    "On a Roll",
+    "Malicious Monetization",
+    "Pandora's Items III",
+    "May the Fours Be With You",
+    "Trade Sector",
+    "Pilfer",
+    "Big Grab Bag",
+    "Critical Success",
+    "Prismatic Ticket",
+    "Carve a Path",
+    "Caretaker's Ally",
+    "Construct a Companion",
+    "Calculated Loss",
+    "Risky Moves",
+    "New Recruit",
+    "Soul Awakening",
+    "Band of Thieves",
+    "Slice of Life",
+    "Jeweled Lotus II",
+    "Money Monsoon",
+    "Living Forge",
+    "Warpath",
+    "Blood Offering",
+    "Extra Buckles",
+    "Mace's Will",
+    "Legion of Threes",
+    "Gain 21 Gold",
+    "Size Matters",
+    "Tons of Stats!",
+    "Booster Pack++",
+    "Tiniest Titan",
+    "Booster Pack+",
+    "Partial Ascension",
+    "Epoch",
+    "Healing Orbs II",
+    "Pandora's Items",
+    "Portable Forge",
+    "Cognitive Overload",
+    "Kick Start",
+    "Latent Forge",
+    "Comeback Story",
+    "Cybernetic Uplink",
+    "Deadlier Blades",
+    "Shopping Spree",
+    "Just Hit"
+  ],
+  "traits": {
+    "Shepherd": [
+      3,
+      5,
+      7
+    ],
+    "Arbiter": [
+      2,
+      3
+    ],
+    "Sniper": [
+      2,
+      3,
+      4
+    ],
+    "Replicator": [
+      2,
+      4
+    ],
+    "Challenger": [
+      2,
+      3,
+      4,
+      5
+    ],
+    "Anima": [
+      3,
+      6
+    ],
+    "Rogue": [
+      2,
+      3,
+      4,
+      5
+    ],
+    "Meeple": [
+      3,
+      5,
+      7,
+      10
+    ],
+    "N.O.V.A.": [
+      2,
+      5
+    ],
+    "Dark Star": [
+      2,
+      4,
+      6,
+      9
+    ],
+    "Voyager": [
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "Galaxy Hunter": [
+      1
+    ],
+    "Divine Duelist": [
+      1
+    ],
+    "Gun Goddess": [
+      1
+    ],
+    "Brawler": [
+      2,
+      4,
+      6
+    ],
+    "Conduit": [
+      2,
+      3,
+      4,
+      5
+    ],
+    "Mecha": [
+      3,
+      4,
+      6
+    ],
+    "Marauder": [
+      2,
+      4,
+      6
+    ],
+    "Primordian": [
+      2,
+      3
+    ],
+    "Timebreaker": [
+      2,
+      3,
+      4
+    ],
+    "Fateweaver": [
+      2,
+      4
+    ],
+    "Bastion": [
+      2,
+      4,
+      6
+    ],
+    "Vanguard": [
+      2,
+      4,
+      6
+    ],
+    "Space Groove": [
+      1,
+      3,
+      5,
+      7,
+      10
+    ],
+    "Stargazer": [
+      3,
+      4,
+      5,
+      6
+    ],
+    "Psionic": [
+      2,
+      4
+    ],
+    "Commander": [
+      1
+    ],
+    "God-Blessed": [],
+    "Party Animal": [
+      1
+    ],
+    "Doomer": [
+      1
+    ],
+    "Bulwark": [
+      1
+    ],
+    "Factory New": [
+      1
+    ],
+    "Redeemer": [
+      1
+    ],
+    "Oracle": [
+      1
+    ],
+    "Dark Lady": [
+      1
+    ],
+    "Eradicator": [
+      1
+    ],
+    "Choose Trait": []
+  }
+}

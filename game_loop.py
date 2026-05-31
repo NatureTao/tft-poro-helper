@@ -34,6 +34,7 @@ def load_squad(squad_name):
 
 def game_loop(message_queue: multiprocessing.Queue, squad_data=None, smart_mode=False):
     """机器人主循环：匹配 → 游戏 → 再匹配"""
+
     counter = 0
 
     logger.info("TFT PORO HELPER 已启动")
@@ -62,7 +63,7 @@ def game_loop(message_queue: multiprocessing.Queue, squad_data=None, smart_mode=
             auto_queue.queue()
             logger.info("匹配成功，进入游戏")
 
-            game_instance = Game(message_queue, squad_data=squad_data, smart_mode=smart_mode)
+            game_instance = Game(message_queue, squad_data=squad_data, smart_mode=smart_mode, game_count=counter+1)
 
             if squad_data and not smart_mode:
                 logger.info("使用固定阵容配置进行游戏")

@@ -1,7 +1,63 @@
-""" 游戏固定事件数据 加载JSON数据入口 回合信息 """
-import os
-from pathlib import Path
+"""
+    最后更新时间: 2025年4月12日
+        英雄和装备数据
+    从 config/game_data_zh_CN.json 动态加载
+"""
 import json
+from pathlib import Path
+
+# 加载游戏数据
+_data_path = Path(__file__).parent / "config" / "game_data_zh_CN.json"
+with open(_data_path, "r", encoding="utf-8") as f:
+    _game_data = json.load(f)
+
+# ======================================================================
+# 装备数据
+# ======================================================================
+
+# 所有装备名称
+ALL_ITEMS: set[str] = set(_game_data.get("items", []))
+ITEMS = ALL_ITEMS
+
+# 可合成装备配方
+FULL_ITEMS = _game_data.get("combinable_items", {})
+
+# 合成装备名称集合
+COMBINED_ITEMS: set[str] = set(FULL_ITEMS.keys())
+
+# 基本散件（不可合成）
+BASIC_ITEM: set[str] = ALL_ITEMS - COMBINED_ITEMS
+
+# ======================================================================
+# 英雄数据（兼容旧格式：Trait1/2/3 + Gold + Board Size）
+# ======================================================================
+
+CHAMPIONS: dict = {}
+for hero_name, hero_data in _game_data.get("champions", {}).items():
+    traits = hero_data.get("traits", [])
+    CHAMPIONS[hero_name] = {
+        "Gold": hero_data.get("cost", 1),
+        "Board Size": hero_data.get("size", 1),
+        "Trait1": traits[0] if len(traits) > 0 else "",
+        "Trait2": traits[1] if len(traits) > 1 else "",
+        "Trait3": traits[2] if len(traits) > 2 else "",
+    }
+
+# ======================================================================
+# 辅助函数
+# ======================================================================
+
+def champion_board_size(champion: str) -> int:
+    """返回英雄占人口数"""
+    return CHAMPIONS[champion]["Board Size"]
+
+def champion_gold_cost(champion: str) -> int:
+    """返回英雄费用"""
+    return CHAMPIONS[champion]["Gold"]
+
+# ======================================================================
+# 回合数据（赛季固定，保持原样）
+# ======================================================================
 
 ROUNDS: set[str] = {"1-1", "1-2", "1-3", "1-4",
                     "2-1", "2-2", "2-3", "2-4", "2-5", "2-6", "2-7", "2-8",
@@ -12,27 +68,17 @@ ROUNDS: set[str] = {"1-1", "1-2", "1-3", "1-4",
                     "7-1", "7-2", "7-3", "7-4", "7-5", "7-6", "7-7", "7-8"}
 
 SECOND_ROUND: set[str] = {"1-2"}
-
-# 选秀回合
 CAROUSEL_ROUND: set[str] = {"1-1", "2-4", "3-4", "4-4", "5-4", "6-4", "7-4"}
-
 PVE_ROUND: set[str] = {"1-3", "1-4", "2-7", "3-7", "4-6", "4-7", "5-7", "6-7", "7-7"}
-
 PVP_ROUND: set[str] = {"2-1", "2-2", "2-3", "2-5", "2-6",
                        "3-1", "3-2", "3-3", "3-5", "3-6",
                        "4-1", "4-2", "4-3", "4-5",
                        "5-1", "5-2", "5-3", "5-5", "5-6",
                        "6-1", "6-2", "6-3", "6-5", "6-6",
                        "7-1", "7-2", "7-3", "7-5", "7-6"}
-# 拾取战利品回合
 PICKUP_ROUNDS: set[str] = {"2-1", "3-1", "4-1", "4-3", "5-1", "6-1", "7-1"}
-
 ANVIL_ROUNDS: set[str] = {"2-1", "2-5", "3-1", "3-5", "4-1", "4-5", "5-1", "5-5", "6-1", "6-5", "7-1", "7-5"}
-
-# 强化符文回合
 AUGMENT_ROUNDS: set[str] = {"2-1", "3-2", "4-2"}
-
-# 这些回合给装备
 ITEM_PLACEMENT_ROUNDS: set[str] = {
     "2-1", "2-5", "2-7",
     "3-3", "3-5", "3-7",
@@ -41,74 +87,33 @@ ITEM_PLACEMENT_ROUNDS: set[str] = {
     "6-1", "6-2", "6-3", "6-5", "6-6", "6-7",
     "7-1", "7-2", "7-3", "7-5", "7-6", "7-7"
 }
-# 刚开始的回合
 ENCOUNTER_ROUNDS: set[str] = {"0-0"}
-
-# 自动投降回合
 FINAL_COMP_ROUND = "5-5"
 
-# 动态读取数据
-existingData = {}
-basePath = Path(__file__).parent / "config"
-if os.path.exists(basePath):
-    if os.path.isfile(existing_path := os.path.join(basePath, "resource.json")):
-        try:
-            with open(existing_path, "r", encoding="utf-8") as f:
-                existingData = json.load(f)
-        except Exception as e:
-            print(e)
-    else:
-        print("未找到文件")
-else:
-    print("未找到文件夹")
-
-# 基本装备
-BASIC_ITEM = set(existingData['BASIC_ITEM'])
-# 合成装备
-COMBINED_ITEMS = set(existingData['COMBINED_ITEMS'])
-# 合成表
-FULL_ITEMS = existingData['FULL_ITEMS']
-# 辅助装备
-SUPPORT_ITEM = existingData['SUPPORT_ITEM']
-# 不可合成的
-NON_CRAFTABLE_ITEMS = existingData['NON_CRAFTABLE_ITEMS']
-# 奥恩装备
-ORNN_ITEMS = set(existingData['ORNN_ITEMS'])
-# 光明装备
-SACRED_ITEMS = set(existingData['SACRED_ITEMS'])
-SACRED_MATCHED_GROUP = existingData['SACRED_MATCHED_GROUP']
-# 英雄信息
-CHAMPIONS = existingData['CHAMPIONS']
-# 符文
-RUNE = existingData['RUNE']
-# 果实
-FRUIT = existingData['FRUIT']
-
-REAR_ITEMS = existingData['REAR_ITEMS']
-FRONTLINE_ITEMS = existingData['FRONTLINE_ITEMS']
-
-# 所有装备
-ITEMS: set[str] = BASIC_ITEM.union(COMBINED_ITEMS).union(SUPPORT_ITEM).union(NON_CRAFTABLE_ITEMS).union(
-    ORNN_ITEMS).union(SACRED_ITEMS)
-
 # 铁砧奇遇
-ANVIL_PORTALS: list[str] = [
-    "基础装备锻造器",
-    "神器锻造器"
-]
-# 假人等奇遇
-DUMMY_PORTALS: list[str] = [
-    "魔像训练师",
-]
-ADDITIONAL_AUGMENT: list[str] = [
-    "黑入:笫四个强化符文",
-]
+ANVIL_PORTALS: list[str] = ["基础装备锻造器"]
+DUMMY_PORTALS: list[str] = ["魔像训练师"]
 
-def champion_board_size(champion: str) -> int:
-    """Takes a string (champion name) and returns board size of champion"""
-    return CHAMPIONS[champion]["Board Size"]
+# 前排装备 / 后排装备
+FRONTLINE_ITEMS: set[str] = {
+    "锁子甲", "负极斗篷", "巨人腰带",
+    "军团圣盾", "女妖面纱", "殉道美德", "钢铁烈阳之匣",
+    "兰顿之兆", "兹若特传送门", "永恒烈焰", "骑士之誓",
+    "生命盔甲", "永恒凛冬", "碎舰者", "诡术师之镜",
+    "密银黎明", "暗行者之爪", "幽魂弯刀", "禁忌雕像", "光盾徽章",
+    "破防者"
+}
 
+REAR_ITEMS: set[str] = {
+    "暴风之剑", "反曲之弓", "无用大棒", "女神之泪", "拳套",
+    "余烬之冠", "能量圣杯", "黑曜石切割器", "静止法衣",
+    "基克的先驱", "灵风", "辅助手套", "月石再生器", "恶意",
+    "死亡之蔑", "魔蕴", "三相之力", "金币收集者", "中娅悖论",
+    "狙击手的专注", "冥火之拥", "铁匠手套", "钻石之手",
+    "飞升护符", "黑暗吸血鬼节杖", "鱼骨头", "迷离风衣",
+    "视界专注", "无终恨意", "疾射火炮", "激发之匣", "卢登的激荡",
+    "枯萎珠宝", "智慧末刃", "巫妖之祸",
+}
 
-def champion_gold_cost(champion: str) -> int:
-    """根据字符串（英雄名称）返回英雄购买需要的金币"""
-    return CHAMPIONS[champion]["Gold"]
+# 光明装备映射（保留）
+SACRED_MATCHED_GROUP = {}

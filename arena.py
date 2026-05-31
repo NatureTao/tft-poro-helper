@@ -46,6 +46,9 @@ class Arena:
         self.active_portal: str = ""
         self.scorer = None  # 智能评分引擎（由 Game 注入）
         self.fixed_squad = None  # 固定阵容数据（由 Game 注入）
+        self.current_comp = ""  # 当前推荐阵容名称
+        self.locked_comp_heroes = None  # 2-4 锁定后的阵容英雄列表（不再重新评分）
+        self.locked_comp_squad = None  # 锁定阵容的完整 squad dict（含站位数据）
 
     def portal_augment(self) -> None:
         """检查区域扩展并相应地设置标志"""
@@ -84,17 +87,18 @@ class Arena:
                 )
                 if self.champs_to_buy.get(champ_name, 0) > 0:
                     logger.info(f"  备战区[{champ_name}]存在升星队列中")
+                    champ_comp = comps.COMP.get(champ_name) or {}
                     self.bench[index] = Champion(
                         name=champ_name,
                         coords=screen_coords.BENCH_LOC[index].get_coords(),
-                        build=comps.COMP[champ_name]["items"].copy(),
+                        build=champ_comp.get("items", []).copy(),
                         slot=index,
                         size=game_assets.CHAMPIONS[champ_name]["Board Size"],
-                        final_comp=comps.COMP[champ_name]["final_comp"],
+                        final_comp=champ_comp.get("final_comp", False),
                         trait1=game_assets.CHAMPIONS[champ_name]["Trait1"],
                         trait2=game_assets.CHAMPIONS[champ_name]["Trait2"],
                         trait3=game_assets.CHAMPIONS[champ_name]["Trait3"],
-                        center=comps.COMP[champ_name]["center"],
+                        center=champ_comp.get("center", False),
                     )
                     self.champs_to_buy[champ_name] -= 1
                 else:
@@ -109,17 +113,18 @@ class Arena:
 
     def bought_champion(self, name: str, slot: int) -> None:
         """购买英雄 并创建英雄实例"""
+        champ_comp = comps.COMP.get(name) or {}
         self.bench[slot] = Champion(
             name=name,
             coords=screen_coords.BENCH_LOC[slot].get_coords(),
-            build=comps.COMP[name]["items"].copy(),
+            build=champ_comp.get("items", []).copy(),
             slot=slot,
             size=game_assets.CHAMPIONS[name]["Board Size"],
-            final_comp=comps.COMP[name]["final_comp"],
+            final_comp=champ_comp.get("final_comp", False),
             trait1=game_assets.CHAMPIONS[name]["Trait1"],
             trait2=game_assets.CHAMPIONS[name]["Trait2"],
             trait3=game_assets.CHAMPIONS[name]["Trait3"],
-            center=comps.COMP[name]["center"],
+            center=champ_comp.get("center", False),
         )
         mk_functions.move_mouse(screen_coords.DEFAULT_LOC.get_coords())
         sleep(0.5)
@@ -137,20 +142,41 @@ class Arena:
             None,
         )
 
+    def _next_free_slot(self) -> int:
+        """智能模式：找未占用的棋盘位置，优先后排（大下标 = 后排更安全）"""
+        occupied = {c.index for c in self.board}
+        for i in range(len(self.board_unknown)):
+            occupied.add(self.unknown_slots[i])
+        # 从大到小遍历：后排(21-27) → 第三排(14-20) → 第二排(7-13) → 前排(0-6)
+        for slot in reversed(self.unknown_slots):
+            if slot not in occupied:
+                return slot
+        return 0
+
     def move_known(self, champion: Champion) -> None:
         """将英雄移动到棋盘上"""
         logger.info(f"  移动[{champion.name}]到棋盘")
-        destination: tuple = screen_coords.BOARD_LOC[
-            comps.COMP[champion.name]["board_position"]
-        ].get_coords()
+        # 优先级：固定阵容 COMP > 锁定阵容 HERO seat > 空闲位置
+        if champion.name in comps.COMP:
+            board_index = comps.COMP[champion.name]["board_position"]
+        elif self.locked_comp_squad:
+            hero_data = self.locked_comp_squad.get("HERO", {}).get(champion.name)
+            if hero_data and "seat" in hero_data:
+                board_index = hero_data["seat"]
+            else:
+                board_index = self._next_free_slot()
+        else:
+            board_index = self._next_free_slot()
+        destination = screen_coords.BOARD_LOC[board_index].get_coords()
         mk_functions.left_click(champion.coords)
         sleep(0.1)
         mk_functions.left_click(destination)
         champion.coords = destination
+        old_bench_index = champion.index  # 保存备战席下标，先清备战席再改 index
+        self.bench[old_bench_index] = None
+        champion.index = board_index
         self.board.append(champion)
         self.board_names.append(champion.name)
-        self.bench[champion.index] = None
-        champion.index = comps.COMP[champion.name]["board_position"]
         self.board_size += champion.size
 
     def move_unknown(self) -> None:
@@ -232,18 +258,73 @@ class Arena:
                     self.sell_bench()
                     return
 
+    def sync_board_state(self) -> None:
+        """检测游戏是否自动上场了棋子（人口有缺但备战席有 Champion 没上去）"""
+        expected = arena_functions.fetch_level()
+        actual = self.board_size + len(self.board_unknown)
+        if actual >= expected:
+            return
+        # 找备战席中已经有 Champion 实例但还没上场的
+        for slot in self.bench:
+            if isinstance(slot, Champion) and slot.name not in self.board_names:
+                logger.info(f"  同步：检测到[{slot.name}]未上场，自动放置")
+                self.move_known(slot)
+                return
+        # 如果备战席也没 Champion，从商店买一个便宜的打工仔占位
+        if self.scorer:
+            gold = arena_functions.fetch_gold()
+            shop = arena_functions.fetch_shop()
+            for champ in shop:
+                cost = game_assets.CHAMPIONS.get(champ[1], {}).get("Gold", 1)
+                if cost <= gold and cost <= 2 and champ[1] not in self.board_unknown:
+                    logger.info(f"  同步：买入打工仔[{champ[1]}]占人口")
+                    none_slot = arena_functions.find_empty_bench_slot()
+                    if none_slot != -1:
+                        mk_functions.left_click(screen_coords.BUY_LOC[champ[0]].get_coords())
+                        sleep(0.2)
+                        self.bench[none_slot] = f"{champ[1]}"
+                        self.move_unknown()
+                    return
+
     def replace_unknown(self) -> None:
-        """替换掉未识别的英雄"""
+        """替换掉未识别的英雄（跳过已识别的）"""
         champion: Champion | None = self.have_champion()
         if len(self.board_unknown) > 0 and champion is not None:
+            # 只替换仍为 ? 的未知棋子，已识别的保留
+            try:
+                idx = next(
+                    i for i, v in enumerate(self.board_unknown)
+                    if isinstance(v, str) and v in ("?", "")
+                )
+            except StopIteration:
+                return
             mk_functions.press_e(
                 screen_coords.BOARD_LOC[
-                    self.unknown_slots[len(self.board_unknown) - 1]
+                    self.unknown_slots[idx]
                 ].get_coords()
             )
-            self.board_unknown.pop()
+            self.board_unknown.pop(idx)
             self.board_size -= 1
             self.move_known(champion)
+
+    def identify_board_unknowns(self) -> None:
+        """右键棋盘上 ? 棋子 → OCR 识别名称"""
+        for i in range(len(self.board_unknown)):
+            slot = self.board_unknown[i]
+            if isinstance(slot, str) and slot in ("?", ""):
+                mk_functions.right_click(
+                    screen_coords.BOARD_LOC[self.unknown_slots[i]].get_coords()
+                )
+                sleep(3)  # 等待棋子信息面板加载
+                champ_name = arena_functions._match_champion_name(
+                    ocr.get_text(
+                        screenxy=screen_coords.PANEL_NAME_LOC.get_coords(),
+                        scale=3,
+                    )
+                )
+                if champ_name and champ_name in game_assets.CHAMPIONS:
+                    logger.info(f"  识别棋盘未知棋子[{i}] → {champ_name}")
+                    self.board_unknown[i] = champ_name
 
     def bench_cleanup(self) -> None:
         """出售未识别的英雄"""
@@ -510,6 +591,24 @@ class Arena:
 
     def final_comp_check(self) -> None:
         """检查棋盘并替换没有进入决赛的英雄"""
+        if self.locked_comp_heroes:
+            # === 智能模式锁定后：清理非阵容棋子，上阵容棋子 ===
+            # 1. 卖掉棋盘上不在锁定阵容中的棋子
+            for champ in list(self.board):
+                if isinstance(champ, Champion) and champ.name not in self.locked_comp_heroes:
+                    logger.info(f"  清理非阵容棋子[{champ.name}]")
+                    mk_functions.press_e(champ.coords)
+                    self.board.remove(champ)
+                    self.board_names.remove(champ.name)
+                    self.board_size -= champ.size
+            # 2. 把备战席中阵容需要的棋子上场
+            for slot in list(self.bench):
+                if isinstance(slot, Champion) and slot.name in self.locked_comp_heroes:
+                    if slot.name not in self.board_names:
+                        self.move_known(slot)
+            return
+
+        # === 固定阵容模式：原逻辑 ===
         for slot in self.bench:
             if (
                     isinstance(slot, Champion)
@@ -540,17 +639,164 @@ class Arena:
         except TypeError:
             logger.warning("  [!]装备栏没有装备")
 
+    def _find_locked_squad(self) -> dict:
+        """从 scorer 中查找锁定阵容的完整数据"""
+        if not self.scorer or not self.current_comp:
+            return {}
+        for s in self.scorer._squads:
+            if s.get("_name") == self.current_comp:
+                return s
+        return {}
+
+    def lock_current_comp(self) -> None:
+        """2-4/3-4 锁定当前推荐阵容，停止重新评分"""
+        self.final_comp = True
+        # 重新评分一次，取第 1 名锁定（只锁定这一套）
+        if self.scorer:
+            bench = {}
+            for slot in self.bench:
+                if isinstance(slot, Champion):
+                    name = slot.name
+                    bench[name] = bench.get(name, {"star": 1, "count": 0})
+                    bench[name]["count"] += 1
+            components = [i for i in self.items if i is not None]
+            gold = arena_functions.fetch_gold()
+            level = arena_functions.fetch_level()
+            shop = arena_functions.fetch_shop()
+            shop_names = [s[1] for s in shop if s[1]]
+            active_traits = {}
+            for c in self.board:
+                if isinstance(c, Champion):
+                    for i in range(1, 4):
+                        t = game_assets.CHAMPIONS.get(c.name, {}).get(f"Trait{i}", "")
+                        if t:
+                            active_traits[t] = active_traits.get(t, 0) + 1
+            rankings = self.scorer.score_all(
+                bench_champions=bench, components=components,
+                active_traits=active_traits, shop_champions=shop_names,
+                gold=gold, level=level,
+            )
+            if rankings:
+                self.current_comp = rankings[0]["name"]
+                self.locked_comp_heroes = {}
+                for h in rankings[0].get("heroes", []):
+                    if h in game_assets.CHAMPIONS:
+                        self.locked_comp_heroes[h] = 3
+                self.locked_comp_squad = self._find_locked_squad()
+                logger.info(f"  阵容已锁定: {self.current_comp} ({len(self.locked_comp_heroes)} 个英雄)")
+                # 立即覆盖 champs_to_buy
+                self.champs_to_buy = dict(self.locked_comp_heroes)
+                return
+        # 保底：用当前的
+        self.locked_comp_heroes = dict(self.champs_to_buy)
+        self.locked_comp_squad = self._find_locked_squad()
+
     def spend_gold(self, speedy=False) -> None:
         """每回合都消费金币"""
-        first_run = True
-        min_gold = 100 if speedy else (settings.MIN_GOLD if self.spam_roll else settings.MAX_GOLD)
-        show_store = False
 
-        while first_run or arena_functions.fetch_gold() >= min_gold:
+        # ==============================================================
+        # 智能模式：每回合评分，用推荐阵容覆盖 champs_to_buy
+        # ==============================================================
+        if self.scorer:
+            if self.final_comp and self.locked_comp_heroes:
+                # 已锁定 → 使用锁定时的静态英雄列表，不再重新评分
+                self.champs_to_buy = dict(self.locked_comp_heroes)
+                logger.info(f"  锁定阵容: {self.current_comp}")
+                # 跳转到买棋逻辑（不执行下面评分代码）
+                self._compute_min_gold()
+                self._buy_loop(speedy)
+                return
+
+            # 未锁定 → 正常评分
+            bench = {}
+            for slot in self.bench:
+                if isinstance(slot, Champion):
+                    name = slot.name
+                    if name not in bench:
+                        bench[name] = {"star": 1, "count": 0}
+                    bench[name]["count"] += 1
+                    bench[name]["star"] = max(bench[name]["star"], getattr(slot, 'star', 1))
+
+            components = [item for item in self.items if item is not None]
+            gold = arena_functions.fetch_gold()
+            level = arena_functions.fetch_level()
+            shop = arena_functions.fetch_shop()
+            shop_names = [s[1] for s in shop if s[1]]
+
+            # 从棋盘统计当前羁绊
+            active_traits = {}
+            for champion in self.board:
+                if isinstance(champion, Champion):
+                    hero_data = game_assets.CHAMPIONS.get(champion.name, {})
+                    for i in range(1, 4):
+                        trait = hero_data.get(f"Trait{i}", "")
+                        if trait:
+                            active_traits[trait] = active_traits.get(trait, 0) + 1
+
+            rankings = self.scorer.score_all(
+                bench_champions=bench,
+                components=components,
+                active_traits=active_traits,
+                shop_champions=shop_names,
+                gold=gold,
+                level=level,
+            )
+
+            if rankings:
+                top = rankings[0]
+                self.current_comp = top['name']
+                logger.info(f"推荐: {self.current_comp} ({top['score']}分)")
+                # 把推荐阵容的棋子注入 champs_to_buy
+                self.champs_to_buy.clear()
+                if self.final_comp:
+                    # 2-4 后锁定阵容 → 只买第 1 名的棋子
+                    candidates = [rankings[0]]
+                else:
+                    # 前期灵活 → 买前 3 名阵容的棋子，方便转型
+                    candidates = rankings[:3]
+                for r in candidates:
+                    for hero_name in r.get('heroes', []):
+                        if hero_name in game_assets.CHAMPIONS:
+                            self.champs_to_buy[hero_name] = 3
+        # ==============================================================
+
+        self._compute_min_gold(speedy)
+        self._buy_loop()
+
+    def _compute_min_gold(self, speedy=False) -> None:
+        """计算本回合的预留金币阈值"""
+        if self.scorer:
+            level = arena_functions.fetch_level()
+            if self.spam_roll or (self.HP and self.HP[0][1] <= settings.HEALTH):
+                self._min_gold = 0  # 血量低 → 全花光
+            elif level <= 5:
+                self._min_gold = 34  # 3~5 级存 34 吃利息
+            else:
+                self._min_gold = 54  # 6+ 级存 54 吃利息
+        else:
+            self._min_gold = 100 if speedy else (settings.MIN_GOLD if self.spam_roll else settings.MAX_GOLD)
+
+    def _buy_loop(self) -> None:
+        """买棋主循环：XP/刷新（受 min_gold 控制）+ 买棋（不受限，买得起就买）"""
+        show_store = False
+        first_run = True
+
+        while first_run or arena_functions.fetch_gold() >= self._min_gold:
             refresh = True
             if not first_run:
-                if level := arena_functions.fetch_level() != 10:
-                    if arena_functions.fetch_level() not in settings.UPGRADE_LEVEL:
+                cur_level = arena_functions.fetch_level()
+                if cur_level != 10:
+                    if self.scorer:
+                        if cur_level <= 5:
+                            buy_xp = False
+                        elif cur_level >= 9:
+                            buy_xp = False
+                        else:
+                            buy_xp = True
+                    else:
+                        buy_xp = cur_level not in settings.UPGRADE_LEVEL
+
+                    if buy_xp:
                         mk_functions.buy_xp()
                         logger.info("  小于期望等级 -> 购买经验")
                         if settings.BUY_EXP_REFRESH_STORE:
@@ -558,36 +804,54 @@ class Arena:
                             logger.info("  小于期望等级 -> 刷新商店")
                             refresh = False
                             show_store = True
-                    elif self.check_center_perfect():
+                    else:
+                        if self.spam_roll or cur_level >= 9 or (self.scorer and cur_level <= 5):
+                            mk_functions.reroll()
+                            logger.info("  刷新商店")
+                            show_store = True
+                    if not self.scorer and self.check_center_perfect():
                         mk_functions.buy_xp()
                         logger.info("  C位成型 -> 购买经验")
                         mk_functions.reroll()
                         logger.info("  C位成型 -> 刷新商店")
                         refresh = False
                         show_store = True
-                if (refresh and arena_functions.fetch_level() in settings.UPGRADE_LEVEL) or level == 10 or self.spam_roll:
-                    mk_functions.reroll()
-                    logger.info("  刷新商店")
-                    show_store = True
 
-            shop: list = arena_functions.fetch_shop()
-
+            shop = arena_functions.fetch_shop()
             if show_store or first_run:
-                logger.info(f"  商店: {shop}")
+                names = " | ".join(s[1] or "?" for s in shop)
+                logger.info(f"  商店：[{names}]")
 
             for champion in shop:
-                if (
-                        self.champs_to_buy.get(champion[1], -1) >= 0
-                        and arena_functions.fetch_gold()
-                        - game_assets.CHAMPIONS[champion[1]]["Gold"]
-                        >= 0
-                ):
-                    self.buy_champion(champion, 1)
+                if self.champs_to_buy.get(champion[1], -1) >= 0:
+                    cost = game_assets.CHAMPIONS.get(champion[1], {}).get("Gold", 1)
+                    if arena_functions.fetch_gold() >= cost:
+                        self.buy_champion(champion, 1)
 
             first_run = False
-
             if arena_functions.fetch_round_remaining_time() <= 4:
                 return
+
+    def _clean_bench_excess(self) -> None:
+        """备战席满时：卖掉已经2星棋子的多余1星，腾位置"""
+        # 统计每个棋子在备战席的数量
+        champ_count = {}
+        for slot in self.bench:
+            if isinstance(slot, Champion):
+                name = slot.name
+                champ_count[name] = champ_count.get(name, 0) + 1
+
+        for i, slot in enumerate(self.bench):
+            if isinstance(slot, Champion):
+                name = slot.name
+                count = champ_count.get(name, 0)
+                # 如果已经有 3 个以上（已合2星还多），卖掉多余的1星
+                if count >= 3 and count > len([s for s in self.bench
+                                               if isinstance(s, Champion) and s.name == name and s not in self.board_names]):
+                    mk_functions.press_e(slot.coords)
+                    logger.info(f"  清理备战席多余[{name}]（已有2星）")
+                    self.bench[i] = None
+                    champ_count[name] -= 1
 
     def buy_champion(self, champion, quantity) -> None:
         """从商店购买英雄"""
@@ -599,6 +863,16 @@ class Arena:
             if champion[1] in self.champs_to_buy:
                 self.champs_to_buy[champion[1]] -= quantity
         else:
+            # 备战席满 → 先清理已2星的多余1星
+            self._clean_bench_excess()
+            none_slot = arena_functions.find_empty_bench_slot()
+            if none_slot != -1:
+                mk_functions.left_click(screen_coords.BUY_LOC[champion[0]].get_coords())
+                logger.info(f"    购买 {champion[1]}")
+                self.bought_champion(champion[1], none_slot)
+                if champion[1] in self.champs_to_buy:
+                    self.champs_to_buy[champion[1]] -= quantity
+                return
             logger.info(f"  备战区已满 无法购买: {champion[1]}")
             mk_functions.left_click(screen_coords.BUY_LOC[champion[0]].get_coords())
             game_functions.default_pos()

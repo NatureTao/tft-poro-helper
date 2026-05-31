@@ -21,6 +21,8 @@ class Home(QFrame):
         self.lock = threading.Lock()
         self.controller = None
         self.is_running = False
+        self._session_start = None
+        self._game_count = 0
         self.setObjectName(I18n.get(I18nKey.HOME_PAGE_NAME))
 
         # ---- 主布局 ----
@@ -80,15 +82,23 @@ class Home(QFrame):
     def _on_start_clicked(self):
         """开始/结束挂机"""
         if self.controller is None:
+            from utils.logger import logger
+            logger.warning("引擎还在加载中，请稍候...")
             return
+
         if self.is_running:
             self.controller.stop()
             self.is_running = False
+            self._session_start = None
             self.startBtn.setIcon(FluentIcon.PLAY_SOLID)
             self.startBtn.setText(I18n.get(I18nKey.START_BOT))
         else:
-            self.controller.start()
+            self.consoleModule.clear_log()  # 清空上一局日志
+            self.controller.start(smart_mode=True)
             self.is_running = True
+            self._session_start = __import__('time').time()
+            self._game_count += 1
+            self.statsModule.update_stats(session_games=self._game_count, uptime_seconds=0)
             self.startBtn.setIcon(FluentIcon.POWER_BUTTON)
             self.startBtn.setText(I18n.get(I18nKey.STOP_BOT))
 
@@ -99,7 +109,15 @@ class Home(QFrame):
         self.timer.start(1000)
 
     def _refresh_client_data(self):
+        # 更新运行时（每秒）
+        if self._session_start is not None:
+            uptime = int(__import__('time').time() - self._session_start)
+            self.statsModule.update_stats(
+                session_games=self._game_count,
+                total_games=self._game_count,
+                uptime_seconds=uptime,
+            )
+
         task = RefreshTask(self.userInfoModule.updateData)
-        # 同时刷新统计模块
         task.signals.finished.connect(self.statsModule.refresh_from_service)
         QThreadPool.globalInstance().start(task)

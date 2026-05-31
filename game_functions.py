@@ -15,13 +15,18 @@ from utils.logger import logger
 # 全局加载 YOLO 模型，只加载一次
 _yolo_model = None
 
+def set_yolo_model(model):
+    """从外部注入预加载的 YOLO 模型，避免游戏中重复加载"""
+    global _yolo_model  
+    _yolo_model = model
 
 def _get_yolo_model():
-    """懒加载 YOLO 模型"""
     global _yolo_model
     if _yolo_model is None:
+        import os
+        os.environ["ULTRALYTICS_AUTO_UPDATE"] = "false"
         logger.info("加载 YOLO 模型 → tft_yolo_v5.onnx")
-        _yolo_model = YOLO("models/tft_yolo_v5.onnx")
+        _yolo_model = YOLO("models/tft_yolo_v5.onnx", task="detect", verbose=False)
         logger.info("YOLO 模型加载完成")
     return _yolo_model
 
@@ -110,7 +115,7 @@ def pickup_items() -> None:
         cx, cy = det['center']
         logger.info(f"  拾取法球 [{i+1}/{len(detections)}] {name} ({cx},{cy}) 置信度:{det['confidence']:.2f}")
         mk_functions.right_click((cx, cy))
-        sleep(0.3)
+        sleep(1.5)
 
 
 def _ocr_single_champ_carousel(tft_round: str) -> None:

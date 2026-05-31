@@ -1,4 +1,6 @@
 import traceback
+from pathlib import Path
+
 import requests
 
 
@@ -88,13 +90,67 @@ class GameDataUpdate:
                                 cn_composition = [api_to_name.get(c, c) for c in composition]
                                 self.COMBINABLE_ITEMS[item_name] = cn_composition
 
+                        # 2.5 清洗武装装备（含变量名解析）
+                        armory_items = data_json.get("armory_items", [])
+                        # 先建立 apiName → 解析后名称 的映射（给 composition 引用）
+                        arm_api_to_name = {}
+                        for arm in armory_items:
+                            raw_name = clean_name(arm.get("name", ""))
+                            api = arm.get("apiName", "")
+                            if not raw_name or not api:
+                                continue
+                            resolved = raw_name
+                            for vm in arm.get("variable_matches", []):
+                                full_match = vm.get("full_match", "")
+                                value = vm.get("value", "")
+                                if full_match and value is not None:
+                                    resolved = resolved.replace(full_match, str(value))
+                            resolved = re.sub(r'@[^@]+@', '', resolved).strip()
+                            if not resolved:
+                                resolved = raw_name
+                            arm_api_to_name[api] = resolved
+                        # 把武装装备注入 api_to_name（供普通装备的 composition 引用）
+                        api_to_name.update(arm_api_to_name)
+
+                        # 再逐个添加到 ALL_ITEMS
+                        for arm in armory_items:
+                            raw_name = clean_name(arm.get("name", ""))
+                            if not raw_name:
+                                continue
+                            resolved = raw_name
+                            for vm in arm.get("variable_matches", []):
+                                full_match = vm.get("full_match", "")
+                                value = vm.get("value", "")
+                                if full_match and value is not None:
+                                    resolved = resolved.replace(full_match, str(value))
+                            resolved = re.sub(r'@[^@]+@', '', resolved).strip()
+                            if not resolved:
+                                resolved = raw_name
+
+                            self.ALL_ITEMS.add(resolved)
+                            # 有 composition 的视为可合成装备
+                            composition = arm.get("composition", [])
+                            if composition:
+                                cn_comp = [api_to_name.get(c, c) for c in composition]
+                                self.COMBINABLE_ITEMS[resolved] = cn_comp
+
                         # 3 清洗强化符文
                         augments = data_json.get("augments", [])
                         for aug in augments:
-                            name = aug.get("name", "")
+                            raw_name = clean_name(aug.get("name", ""))
                             api_name = aug.get("apiName", "")
-                            if name and api_name:
-                                self.ALL_AUGMENTS.append(name)
+                            if not raw_name or not api_name:
+                                continue
+                            resolved = raw_name
+                            for vm in aug.get("variable_matches", []):
+                                full_match = vm.get("full_match", "")
+                                value = vm.get("value", "")
+                                if full_match and value is not None:
+                                    resolved = resolved.replace(full_match, str(value))
+                            resolved = re.sub(r'@[^@]+@', '', resolved).strip()
+                            if not resolved:
+                                resolved = raw_name
+                            self.ALL_AUGMENTS.append(resolved)
 
                         # 4 清洗羁绊
                         traits = data_json.get("traits", [])
@@ -204,10 +260,32 @@ class GameDataUpdate:
 
 
 # 调试
+# if __name__ == "__main__":
+#     import json
+#     BASE_DIR = Path(__file__).parent.parent
+#     for lang, label in [("CN", "zh_CN"), ("TW", "zh_TW"), ("EN", "en_US")]:
+#         gd = GameDataUpdate(origin="META_TFT", language=lang)
+#         print(gd)
+#         gd.pull_latest_data()
+#         output = {
+#             "champions": gd.CHAMPIONS,
+#             "items": list(gd.ALL_ITEMS),
+#             "combinable_items": gd.COMBINABLE_ITEMS,
+#             "augments": gd.ALL_AUGMENTS,
+#             "traits": gd.TRAITS,
+#         }
+#         path = BASE_DIR / "config" / f"game_data_{label}.json"
+#         path.parent.mkdir(parents=True, exist_ok=True)
+#         with open(path, "w", encoding="utf-8") as f:
+#             json.dump(output, f, ensure_ascii=False, indent=2)
+#         print(f"已保存: {path}")
+
+
 if __name__ == "__main__":
     gameData = GameDataUpdate(origin="QQ",language="CN",tft_set="17")
     print(gameData)
     gameData.pull_latest_data()
+
     print(gameData.COMBINABLE_ITEMS)
     print(gameData.ALL_ITEMS)
     print(gameData.CHAMPIONS)
