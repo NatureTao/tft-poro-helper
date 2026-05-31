@@ -384,7 +384,7 @@ class Game:
                     mk_functions.left_click(screen_coords.BOARD_LOC[index].get_coords())
                     sleep(0.5)
                     mk_functions.left_click(
-                        screen_coords.BOARD_LOC[self.arena.unknown_slots[len(self.arena.board_unknown)]].get_coords()
+                        screen_coords.BOARD_LOC[self.arena._unknown_slot_rev(len(self.arena.board_unknown))].get_coords()
                     )
                     self.arena.board_unknown.append("魔像")
 
@@ -481,8 +481,9 @@ class Game:
 
         self.arena.bench_cleanup()
 
-        # 装备合成
+        # 装备合成（先刷新 HP 用于低血量随机装备判断）
         if self.round[0] in game_assets.ITEM_PLACEMENT_ROUNDS:
+            self.arena.HP = arena_functions.fetch_health_ranking()
             sleep(1)
             self.arena.place_items()
 

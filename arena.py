@@ -154,7 +154,7 @@ class Arena:
         """智能模式：找未占用的棋盘位置，优先后排（大下标 = 后排更安全）"""
         occupied = {c.index for c in self.board}
         for i in range(len(self.board_unknown)):
-            occupied.add(self.unknown_slots[i])
+            occupied.add(self._unknown_slot_rev(i))
         # 从大到小遍历：后排(21-27) → 第三排(14-20) → 第二排(7-13) → 前排(0-6)
         for slot in reversed(self.unknown_slots):
             if slot not in occupied:
@@ -187,6 +187,10 @@ class Arena:
         self.board_names.append(champion.name)
         self.board_size += champion.size
 
+    def _unknown_slot_rev(self, idx: int) -> int:
+        """board_unknown 第 idx 个棋子对应的棋盘位置（从后排往前分配）"""
+        return sorted(self.unknown_slots, reverse=True)[idx]
+
     def move_unknown(self) -> None:
         """将未识别的英雄移动到棋盘上（优先后排）"""
         for index, champion in enumerate(self.bench):
@@ -194,8 +198,7 @@ class Arena:
                 logger.info(f"  移动 {champion} 到棋盘")
                 mk_functions.left_click(screen_coords.BENCH_LOC[index].get_coords())
                 sleep(0.1)
-                # 使用 _next_free_slot() 找后排空位（和 move_known 一致）
-                slot = self._next_free_slot()
+                slot = self._unknown_slot_rev(len(self.board_unknown))
                 mk_functions.left_click(
                     screen_coords.BOARD_LOC[slot].get_coords()
                 )
@@ -250,6 +253,7 @@ class Arena:
                             and self.champs_to_buy.get(champion[1], -1) < 0
                             and champion[1] not in self.board_unknown
                             and character
+                            and not self.locked_comp_heroes  # 锁定后不买打工仔
                     )
                     if _match_champion_name:
                         none_slot: int = arena_functions.find_empty_bench_slot()
@@ -278,8 +282,8 @@ class Arena:
                 logger.info(f"  同步：检测到[{slot.name}]未上场，自动放置")
                 self.move_known(slot)
                 return
-        # 如果备战席也没 Champion，从商店买一个便宜的打工仔占位
-        if self.scorer:
+        # 如果备战席也没 Champion，从商店买一个便宜的打工仔占位（锁定后不买）
+        if self.scorer and not self.locked_comp_heroes:
             gold = arena_functions.fetch_gold()
             shop = arena_functions.fetch_shop()
             for champ in shop:
@@ -306,10 +310,9 @@ class Arena:
                 )
             except StopIteration:
                 return
+            pos = self._unknown_slot_rev(idx)
             mk_functions.press_e(
-                screen_coords.BOARD_LOC[
-                    self.unknown_slots[idx]
-                ].get_coords()
+                screen_coords.BOARD_LOC[pos].get_coords()
             )
             self.board_unknown.pop(idx)
             self.board_size -= 1
@@ -320,8 +323,9 @@ class Arena:
         for i in range(len(self.board_unknown)):
             slot = self.board_unknown[i]
             if isinstance(slot, str) and slot in ("?", ""):
+                pos = self._unknown_slot_rev(i)
                 mk_functions.right_click(
-                    screen_coords.BOARD_LOC[self.unknown_slots[i]].get_coords()
+                    screen_coords.BOARD_LOC[pos].get_coords()
                 )
                 sleep(3)  # 等待棋子信息面板加载
                 champ_name = arena_functions._match_champion_name(
@@ -577,8 +581,9 @@ class Arena:
     def fix_unknown(self) -> None:
         """解决未知英雄"""
         sleep(0.5)
+        pos = self._unknown_slot_rev(0) if self.board_unknown else 0
         mk_functions.press_e(
-            screen_coords.BOARD_LOC[self.unknown_slots[0]].get_coords()
+            screen_coords.BOARD_LOC[pos].get_coords()
         )
         self.board_unknown.pop(0)
         self.board_size -= 1
@@ -612,8 +617,9 @@ class Arena:
                 name = self.board_unknown[i]
                 if isinstance(name, str) and name not in self.locked_comp_heroes and name not in ("?", ""):
                     logger.info(f"  清理非阵容棋子[{name}]（board_unknown）")
+                    pos = self._unknown_slot_rev(i)
                     mk_functions.press_e(
-                        screen_coords.BOARD_LOC[self.unknown_slots[i]].get_coords()
+                        screen_coords.BOARD_LOC[pos].get_coords()
                     )
                     self.board_unknown.pop(i)
                     self.board_size -= 1
@@ -1049,7 +1055,7 @@ class Arena:
                 labels.append((f"{slot.name}", slot.coords))
 
         labels.extend(
-            (slot, screen_coords.BOARD_LOC[self.unknown_slots[index]].get_coords())
+            (slot, screen_coords.BOARD_LOC[self._unknown_slot_rev(index)].get_coords())
             for index, slot in enumerate(self.board_unknown)
         )
         self.message_queue.put(("LABEL", labels))
