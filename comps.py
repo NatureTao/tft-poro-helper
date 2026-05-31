@@ -68,7 +68,7 @@ def get_unknown_slots() -> list:
     container: list = []
     for _, champion_data in COMP.items():
         container.append(champion_data["board_position"])
-    return [n for n in range(27) if n not in container]
+    return [n for n in range(28) if n not in container]
 
 
 def get_key(comps, index: int) -> str:
