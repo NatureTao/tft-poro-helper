@@ -724,8 +724,12 @@ class Arena:
         self.locked_comp_heroes = dict(self.champs_to_buy)
         self.locked_comp_squad = self._find_locked_squad()
 
-    def spend_gold(self, speedy=False) -> None:
-        """每回合都消费金币"""
+    def spend_gold(self, speedy=False, round_str=None) -> None:
+        """每回合都消费金币
+        Args:
+            speedy: 快速模式（战利品回合）
+            round_str: 当前回合号如 "2-3"，用于智能模式策略切换
+        """
 
         # ==============================================================
         # 智能模式：每回合评分，用推荐阵容覆盖 champs_to_buy
@@ -736,7 +740,7 @@ class Arena:
                 self.champs_to_buy = dict(self.locked_comp_heroes)
                 logger.info(f"  锁定阵容: {self.current_comp}")
                 # 跳转到买棋逻辑（不执行下面评分代码）
-                self._compute_min_gold()
+                self._compute_min_gold(round_str=round_str)
                 self._buy_loop()
                 return
 
@@ -793,19 +797,29 @@ class Arena:
                             self.champs_to_buy[hero_name] = 3
         # ==============================================================
 
-        self._compute_min_gold(speedy)
+        self._compute_min_gold(speedy, round_str=round_str)
         self._buy_loop()
 
-    def _compute_min_gold(self, speedy=False) -> None:
+    def _compute_min_gold(self, speedy=False, round_str=None) -> None:
         """计算本回合的预留金币阈值"""
+        self._round_str = round_str  # 给 _buy_loop 用
         if self.scorer:
-            level = arena_functions.fetch_level()
             if self.spam_roll or (self.HP and self.HP[0][1] <= settings.HEALTH):
                 self._min_gold = 0  # 血量低 → 全花光
-            elif level <= 5:
-                self._min_gold = 34  # 3~5 级存 34 吃利息
+            elif round_str:
+                # 按回合策略：3-5 前存 34 D牌，3-5 后存 54 上人口
+                stage, rnd = (int(x) for x in round_str.split("-"))
+                if (stage, rnd) < (3, 5):
+                    self._min_gold = 34
+                else:
+                    self._min_gold = 54
             else:
-                self._min_gold = 54  # 6+ 级存 54 吃利息
+                # 无回合号时按等级回退
+                level = arena_functions.fetch_level()
+                if level <= 5:
+                    self._min_gold = 34
+                else:
+                    self._min_gold = 54
         else:
             self._min_gold = 100 if speedy else (settings.MIN_GOLD if self.spam_roll else settings.MAX_GOLD)
 
@@ -820,12 +834,11 @@ class Arena:
                 cur_level = arena_functions.fetch_level()
                 if cur_level != 10:
                     if self.scorer:
-                        if cur_level <= 5:
-                            buy_xp = False
-                        elif cur_level >= 9:
-                            buy_xp = False
+                        if self._round_str:
+                            stage, rnd = (int(x) for x in self._round_str.split("-"))
+                            buy_xp = (stage, rnd) >= (3, 5) and cur_level < 9
                         else:
-                            buy_xp = True
+                            buy_xp = 6 <= cur_level <= 8
                     else:
                         buy_xp = cur_level not in settings.UPGRADE_LEVEL
 
@@ -838,7 +851,13 @@ class Arena:
                             refresh = False
                             show_store = True
                     else:
-                        if self.spam_roll or cur_level >= 9 or (self.scorer and cur_level <= 5):
+                        should_droll = self.spam_roll or cur_level >= 9
+                        if self.scorer and self._round_str:
+                            stage, rnd = (int(x) for x in self._round_str.split("-"))
+                            should_droll = should_droll or (stage, rnd) < (3, 5)
+                        elif self.scorer:
+                            should_droll = should_droll or cur_level <= 5
+                        if should_droll:
                             mk_functions.reroll()
                             logger.info("  刷新商店")
                             show_store = True

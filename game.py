@@ -397,7 +397,7 @@ class Game:
         # 核心操作流程
         self.arena.identify_board_unknowns()  # 识别棋盘上 ? 未知棋子
         self.arena.fix_bench_state()      # 修复备战区状态（OCR 识别棋子）
-        self.arena.spend_gold()            # 消费金币（买棋子/刷新/升级）
+        self.arena.spend_gold(round_str=self.round[0])  # 消费金币（买棋子/刷新/升级）
         # 立即推送推荐阵容到 overlay
         self.message_queue.put(("STATUS", {
             "running": True,
@@ -462,7 +462,7 @@ class Game:
         if self.round[0] in game_assets.ANVIL_ROUNDS:
             self.arena.clear_anvil()
 
-        self.arena.spend_gold(speedy=self.round[0] in game_assets.PICKUP_ROUNDS)
+        self.arena.spend_gold(speedy=self.round[0] in game_assets.PICKUP_ROUNDS, round_str=self.round[0])
         # 立即推送推荐阵容到 overlay
         self.message_queue.put(("STATUS", {
             "running": True,
