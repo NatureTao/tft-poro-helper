@@ -26,6 +26,12 @@ class BotController:
         self.stop_after_game = False
         self.smart_mode = smart_mode
 
+        # 终止旧 overlay 进程（防叠加）
+        if self.overlay_process and self.overlay_process.is_alive():
+            self.overlay_process.terminate()
+            self.overlay_process.join(timeout=2)
+            self.message_queue = multiprocessing.Queue()  # 旧队列可能有残留消息
+
         # 启动 overlay 子进程
         from overlay import run_overlay
         self.overlay_process = multiprocessing.Process(

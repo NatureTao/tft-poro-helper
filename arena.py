@@ -188,8 +188,10 @@ class Arena:
         self.board_size += champion.size
 
     def _unknown_slot_rev(self, idx: int) -> int:
-        """board_unknown 第 idx 个棋子对应的棋盘位置（从后排往前分配）"""
-        return sorted(self.unknown_slots, reverse=True)[idx]
+        """board_unknown 第 idx 个棋子对应的棋盘位置（跳过已被 known 棋子占用的）"""
+        occupied = {c.index for c in self.board}
+        candidates = [s for s in sorted(self.unknown_slots, reverse=True) if s not in occupied]
+        return candidates[idx] if idx < len(candidates) else candidates[-1]
 
     def move_unknown(self) -> None:
         """将未识别的英雄移动到棋盘上（优先后排）"""
@@ -330,7 +332,7 @@ class Arena:
                 mk_functions.right_click(
                     screen_coords.BOARD_LOC[pos].get_coords()
                 )
-                sleep(5)  # 等待棋子信息面板加载
+                sleep(8)  # 等待棋子信息面板加载
                 champ_name = arena_functions._match_champion_name(
                     ocr.get_text(
                         screenxy=screen_coords.PANEL_NAME_LOC.get_coords(),
@@ -816,6 +818,9 @@ class Arena:
                     self._min_gold = 34
                 else:
                     self._min_gold = 54
+                # 1-4 至少留 4 金，保证 2-1 买经验升 4 级
+                if round_str == "1-4":
+                    self._min_gold = max(self._min_gold, 4)
             else:
                 # 无回合号时按等级回退
                 level = arena_functions.fetch_level()
