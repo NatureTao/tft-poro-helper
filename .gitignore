@@ -2,28 +2,43 @@
 __pycache__/
 *.pyc
 *.pyo
-.venv/
 *.egg-info/
+build/
+dist/
+
+# 虚拟环境
+.venv/
+venv/
 
 # IDE
 .idea/
+.vscode/
 
-# Logs
+# 日志
 logs/
 
-# Models (大文件)
+# 模型权重(大文件, 用 Release 或 LFS 分发)
 models/*.pth
+models/*.pt
 models/*.onnx
+*.pth
+*.pt
+*.onnx
+best_openvino_model/
 
-# Fonts
+# 数据集
+datasets/
+
+# 字体
 fonts/
 
-# Test
+# 测试脚本(本地)
 test/
 
-# OS
+# 系统文件
 .DS_Store
 Thumbs.db
+desktop.ini
 
-# Config backups
+# 配置备份
 config/*.bak
