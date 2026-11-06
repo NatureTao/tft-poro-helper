@@ -282,7 +282,7 @@ class GameDataUpdate:
 
 
 if __name__ == "__main__":
-    gameData = GameDataUpdate(origin="QQ",language="CN",tft_set="17")
+    gameData = GameDataUpdate(origin="META_TFT",language="CN",tft_set="17")
     print(gameData)
     gameData.pull_latest_data()
 
